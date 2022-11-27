@@ -14,7 +14,7 @@ class profileFrame extends JFrame {
       setSize(WIDTH,HEIGHT);
       setLocationRelativeTo(null);
       setResizable(false);
-      
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       Container contentPane = getContentPane();
       
          //0) 전체 panel
