@@ -82,13 +82,13 @@ public class Database {
 	
 	
 	
-	boolean signUP(String _i, String _p,String _n,String _y) {
+	boolean signUP(String _i, String _p,String _n, String email,String _y, String phoneNumber, String git) {
 		boolean flag = false;
 		String id = _i;
 		String pw = _p;
 		String name = _n;
-		int year = Integer.parseInt(_y);
-		String sql = "insert into USER(user_id, password, name, age) values (?,?,?,?)";
+		String year = _y;
+		String sql = "insert into USER values (?,?,?,?,?,?,?)";
 		try {
 			
 
@@ -97,7 +97,10 @@ public class Database {
 			pstmt.setString(1, id);
 			pstmt.setString(2, pw);
 			pstmt.setString(3, name);
-			pstmt.setInt(4, year);
+			pstmt.setString(4, email);
+			pstmt.setString(5, year);
+			pstmt.setString(6, phoneNumber);
+			pstmt.setString(7, git);
 			
 
 			int r = pstmt.executeUpdate();
@@ -114,6 +117,26 @@ public class Database {
 		flag=true;
 		
 		return flag;
+	}
+	
+	String[] find_friend(String user_id) {
+		String[] p=new String[30]; 
+		int count = 1;
+		try {
+			String checkingStr = "SELECT user_id FROM USER where user_id LIKE \'%"+user_id+"%\'";
+			ResultSet result = stmt.executeQuery(checkingStr);
+			//게시물은 여러개이다 보니 while문을 통해 게시물의 정보를 계속해서 읽어나간다.
+			while(result.next()) {
+				p[count] = result.getString(1);
+				if (result.wasNull()) p[count] = null;
+				count++;
+			}
+		} catch(Exception e) {
+			
+		}
+		//게시물의 개수를 배열의 0번째에 대입한다.
+		p[0]=Integer.toString(count);
+		return p;
 	}
 }
 

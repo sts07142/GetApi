@@ -7,7 +7,7 @@ class MyFrame extends JFrame{
    public static final int WIDTH = 405;
    public static final int HEIGHT = 595;
    JPanel panel, left, center, bottom;
-   //Ä£±¸, Ã¤ÆÃ¸ñ·Ï, °Ë»ö, ³»Á¤º¸¼öÁ¤
+   //ì¹œêµ¬, ì±„íŒ…ëª©ë¡, ê²€ìƒ‰, ë‚´ì •ë³´ìˆ˜ì •
    JButton btnFriend, btnChat, btnSearch, btnUpdateMyData;
    JPanel pnlFriend, pnlChat, pnlSearch, pnlUpdateMyData;
    
@@ -18,8 +18,15 @@ class MyFrame extends JFrame{
    
    // ButtonListener
    ButtonListener bl = new ButtonListener();
+   get_Button getB=new get_Button();
+   Operator o=null;
+   String user_id=new String();
    
-   MyFrame() {
+   JTextField txtFieldSearch;
+   JPanel scrollSearchPanel;
+   MyFrame(Operator _o, String user_id) {
+	   this.o=_o;
+	   this.user_id=user_id;
       setTitle ("Kakaotalk");
       setSize (WIDTH, HEIGHT);
       setLocationRelativeTo(null);
@@ -27,60 +34,61 @@ class MyFrame extends JFrame{
       
       Container contentPane = getContentPane();
       
-      //0) ÀüÃ¼ panel - ¿ŞÂÊ, Áß¾Ó, ¾Æ·¡¸¦ ÇÕÄ£
+      //0) ì „ì²´ panel - ì™¼ìª½, ì¤‘ì•™, ì•„ë˜ë¥¼ í•©ì¹œ
       panel = new JPanel(null);
       panel.setLayout(null);
       
       
-      //1) ¿ŞÂÊ panel - Ä£±¸, Ã¤ÆÃ¸ñ·Ï, °Ë»ö, ³»Á¤º¸¼öÁ¤
+      //1) ì™¼ìª½ panel - ì¹œêµ¬, ì±„íŒ…ëª©ë¡, ê²€ìƒ‰, ë‚´ì •ë³´ìˆ˜ì •
       left = new JPanel(null);
       left.setBounds(0,0,80,460);
       Color leftColor = new Color(236,236,237);
       left.setBackground (leftColor);
-         //Ä£±¸, Ã¤ÆÃ¸ñ·Ï, °Ë»ö, ³»Á¤º¸¼öÁ¤ ¹öÆ°À» Ãß°¡ÇÑ´Ù
-            //1-1)Ä£±¸
+         //ì¹œêµ¬, ì±„íŒ…ëª©ë¡, ê²€ìƒ‰, ë‚´ì •ë³´ìˆ˜ì • ë²„íŠ¼ì„ ì¶”ê°€í•œë‹¤
+            //1-1)ì¹œêµ¬
+      
             icon1 = new ImageIcon("src/image/friend.png");
             img1 = icon1.getImage();
             changeImg1 = img1.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
             friends = new ImageIcon(changeImg1);
             btnFriend = new JButton(friends);
             btnFriend.setBounds(20, 20, 40, 40);
-            btnFriend.setBorderPainted(false); //button Å×µÎ¸®
-            btnFriend.setContentAreaFilled(false); //button ¹è°æ
-            btnFriend.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸®
+            btnFriend.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnFriend.setContentAreaFilled(false); //button ë°°ê²½
+            btnFriend.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬
             
-            //1-2)Ã¤ÆÃ¸ñ·Ï
+            //1-2)ì±„íŒ…ëª©ë¡
             icon2 = new ImageIcon("src/image/not_chat.png");
             img2 = icon2.getImage();
             changeImg2 = img2.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
             chat = new ImageIcon(changeImg2);
             btnChat = new JButton(chat);
             btnChat.setBounds(20, 80, 40, 40);
-            btnChat.setBorderPainted(false); //button Å×µÎ¸®
-            btnChat.setContentAreaFilled(false); //button ¹è°æ
-            btnChat.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸®
+            btnChat.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnChat.setContentAreaFilled(false); //button ë°°ê²½
+            btnChat.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬
             
-            //1-3)°Ë»ö
+            //1-3)ê²€ìƒ‰
             icon3 = new ImageIcon("src/image/not_search.png");
             img3 = icon3.getImage();
             changeImg3 = img3.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
             search = new ImageIcon(changeImg3);
             btnSearch = new JButton(search);
             btnSearch.setBounds(20, 140, 40, 40);
-            btnSearch.setBorderPainted(false); //button Å×µÎ¸®
-            btnSearch.setContentAreaFilled(false); //button ¹è°æ
-            btnSearch.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸®
+            btnSearch.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnSearch.setContentAreaFilled(false); //button ë°°ê²½
+            btnSearch.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬
             
-            //1-4)¼³Á¤
+            //1-4)ì„¤ì •
             icon4 = new ImageIcon("src/image/not_setting.png");
             img4 = icon4.getImage();
             changeImg4 = img4.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
             setting = new ImageIcon(changeImg4);
             btnUpdateMyData = new JButton(setting);
             btnUpdateMyData.setBounds(20, 410, 40, 40);
-            btnUpdateMyData.setBorderPainted(false); //button Å×µÎ¸®
-            btnUpdateMyData.setContentAreaFilled(false); //button ¹è°æ
-            btnUpdateMyData.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸® 
+            btnUpdateMyData.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnUpdateMyData.setContentAreaFilled(false); //button ë°°ê²½
+            btnUpdateMyData.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬ 
             
          left.add(btnFriend);
          left.add(btnChat);
@@ -95,203 +103,203 @@ class MyFrame extends JFrame{
       panel.add(left);
       
       
-      //2) Áß¾Ó panel - Ä£±¸list
-      int listCount = 0; //<---------------------------------DB¿¡¼­ Ä£±¸°¡ ¸î¸íÀÎÁö ÀĞ¾î¿Â ÈÄ ³ÖÀ½
+      //2) ì¤‘ì•™ panel - ì¹œêµ¬list
+      int listCount = 0; //<---------------------------------DBì—ì„œ ì¹œêµ¬ê°€ ëª‡ëª…ì¸ì§€ ì½ì–´ì˜¨ í›„ ë„£ìŒ
       center = new JPanel(null);
       center.setBounds(80,0,325,460);
       center.setBackground (Color.white);
-         //2-1)Ä£±¸ ¸ñ·Ï È­¸é - scollPane ¾È¿¡ ³ÖÀ» panel
+         //2-1)ì¹œêµ¬ ëª©ë¡ í™”ë©´ - scollPane ì•ˆì— ë„£ì„ panel
          pnlFriend = new JPanel(null);
          pnlFriend.setPreferredSize(new Dimension(313, 1000));
          pnlFriend.setBackground(Color.black);
-            //title - Ä£±¸
+            //title - ì¹œêµ¬
             JPanel titleProfile = new JPanel(null);
             titleProfile.setBackground (Color.white);
-            JLabel title = new JLabel("Ä£±¸");
-            title.setFont(new Font("¸¼Àº °íµñ", Font.BOLD , 18));
+            JLabel title = new JLabel("ì¹œêµ¬");
+            title.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD , 18));
             title.setBounds(10,7,100,20);
             titleProfile.add(title);
             titleProfile.setBounds(0,0,295, 35);
             pnlFriend.add(titleProfile);
             
-            //³» ÇÁ·ÎÇÊ
+            //ë‚´ í”„ë¡œí•„
             JPanel profile = new JPanel(null);
             profile.setBackground (Color.white);
             profile.setBounds(0,35,310, 80);
-                  //ÇÁ·ÎÇÊ»çÁø
-                  ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : ·Î±×ÀÎ ÇÑ »ç¶÷ÀÇ ÇÁ·ÎÇÊ»çÁø
+                  //í”„ë¡œí•„ì‚¬ì§„
+                  ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : ë¡œê·¸ì¸ í•œ ì‚¬ëŒì˜ í”„ë¡œí•„ì‚¬ì§„
                   Image img = icon.getImage();
                   Image changeImg = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                   ImageIcon changeIcon = new ImageIcon(changeImg);
                   JLabel profileImg = new JLabel(changeIcon);
                   profileImg.setBounds(10,15,50,50);
                   profile.add(profileImg);
-                  //º°¸í
-                  JLabel nickname = new JLabel("ÇÁ·ÎÇÊº°¸í"); //<----------------------- DB : ·Î±×ÀÎ ÇÑ »ç¶÷ÀÇ º°¸í
+                  //ë³„ëª…
+                  JLabel nickname = new JLabel("í”„ë¡œí•„ë³„ëª…"); //<----------------------- DB : ë¡œê·¸ì¸ í•œ ì‚¬ëŒì˜ ë³„ëª…
                   nickname.setBounds(70,27,100,10);
-                  nickname.setFont(new Font("¸¼Àº °íµñ", Font.BOLD , 10));
+                  nickname.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD , 10));
                   profile.add(nickname);
-                  //¿À´ÃÀÇ ÇÑ¸¶µğ
-                  JLabel message = new JLabel("¿À´ÃÀÇÇÑ¸¶µğ¿À´ÃÀÇÇÑ¸¶µğ¿À´ÃÀÇÇÑ¸¶µğ¿À´ÃÀÇÇÑ¸¶µğ"); //<----------------------- DB : ·Î±×ÀÎ ÇÑ »ç¶÷ÀÇ "¿À´ÃÀÇ ÇÑ¸¶µğ"
+                  //ì˜¤ëŠ˜ì˜ í•œë§ˆë””
+                  JLabel message = new JLabel("ì˜¤ëŠ˜ì˜í•œë§ˆë””ì˜¤ëŠ˜ì˜í•œë§ˆë””ì˜¤ëŠ˜ì˜í•œë§ˆë””ì˜¤ëŠ˜ì˜í•œë§ˆë””"); //<----------------------- DB : ë¡œê·¸ì¸ í•œ ì‚¬ëŒì˜ "ì˜¤ëŠ˜ì˜ í•œë§ˆë””"
                   message.setBounds(70,45,180,10);
-                  message.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 10));
+                  message.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 10));
                   profile.add(message);
-                  //¿Â¿ÀÇÁ¶óÀÎ »óÅÂ
+                  //ì˜¨ì˜¤í”„ë¼ì¸ ìƒíƒœ
                   DrawPanel d = new DrawPanel();
                   d.setBounds(270, 35, 10, 10);
                   profile.add(d);
                pnlFriend.add(profile);
                
-            //Ä£±¸ÇÁ·ÎÇÊ ¶ç¿ì±â
+            //ì¹œêµ¬í”„ë¡œí•„ ë„ìš°ê¸°
             JPanel profile1 = new JPanel();
             profile1.setBackground (Color.pink);
             profile1.setBounds(0,160, 310, 80);
             pnlFriend.add(profile1);
                
-         //½ºÅ©·Ñ¹Ù Æ÷ÇÔ½ÃÄÑ¾ß ÇÔ
+         //ìŠ¤í¬ë¡¤ë°” í¬í•¨ì‹œì¼œì•¼ í•¨
          scrollFriend = new JScrollPane(pnlFriend, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
          scrollFriend.setBounds(0, 0, 313, 460);
          center.add(scrollFriend);
          
-            //³» ÇÁ·ÎÇÊ ¶ç¿ì±â
+            //ë‚´ í”„ë¡œí•„ ë„ìš°ê¸°
             //JPanel profile = new JPanel();
             //profile.setBackground (Color.BLUE);
             //center.add(profile);
-            //for (int i=0; i<listCount; i++) { //Ä£±¸¼ö¸¸Å­ ÇÁ·ÎÇÊ º¸ÀÌ°Ô ÇÏ±â
+            //for (int i=0; i<listCount; i++) { //ì¹œêµ¬ìˆ˜ë§Œí¼ í”„ë¡œí•„ ë³´ì´ê²Œ í•˜ê¸°
                
             //}
                
          
-         //2-2)Ã¤ÆÃ
+         //2-2)ì±„íŒ…
          pnlChat = new JPanel(null);
          pnlChat.setPreferredSize(new Dimension(313, 1000));
          pnlChat.setBackground(Color.yellow);
-            //title - Ã¤ÆÃ
+            //title - ì±„íŒ…
             JPanel titleChat = new JPanel(null);
             titleChat.setBackground (Color.white);
-            JLabel chat = new JLabel("Ã¤ÆÃ");
-            chat.setFont(new Font("¸¼Àº °íµñ", Font.BOLD , 18));
+            JLabel chat = new JLabel("ì±„íŒ…");
+            chat.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD , 18));
             chat.setBounds(10,7,100,20);
             titleChat.add(chat);
             titleChat.setBounds(0,0,310, 35);
             pnlChat.add(titleChat);
          
          
-         //2-3)°Ë»ö
+         //2-3)ê²€ìƒ‰
          pnlSearch = new JPanel(null);
          pnlSearch.setPreferredSize(new Dimension(313, 450));
          pnlSearch.setBackground(Color.orange);
-            //title - °Ë»ö
+            //title - ê²€ìƒ‰
             JPanel titleSearch = new JPanel(null);
             titleSearch.setBackground (Color.white);
-            JLabel search = new JLabel("Ä£±¸ Ãß°¡");
-            search.setFont(new Font("¸¼Àº °íµñ", Font.BOLD , 18));
+            JLabel search = new JLabel("ì¹œêµ¬ ì¶”ê°€");
+            search.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD , 18));
             search.setBounds(10,7,100,20);
             titleSearch.add(search);
             titleSearch.setBounds(0,0,310, 35);
             pnlSearch.add(titleSearch);
             
-            //label - ID·Î Ãß°¡
-            JLabel labelPlus = new JLabel("ID·Î Ãß°¡");
-            labelPlus.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 15));
+            //label - IDë¡œ ì¶”ê°€
+            JLabel labelPlus = new JLabel("IDë¡œ ì¶”ê°€");
+            labelPlus.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 15));
             labelPlus.setBounds(10, 60, 100, 15);
             pnlSearch.add(labelPlus);
                   
-            //ÀÔ·ÂÃ¢ - °Ë»ö
-            JTextField txtFieldSearch = new JTextField();
+            //ì…ë ¥ì°½ - ê²€ìƒ‰
+            txtFieldSearch = new JTextField();
             txtFieldSearch.setBounds(10, 85, 230, 25);
             pnlSearch.add(txtFieldSearch);
             
-            //¹öÆ° - °Ë»ö
-            JButton btnsearchList = new JButton("°Ë»ö");
-            btnsearchList.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 5));
+            //ë²„íŠ¼ - ê²€ìƒ‰
+            JButton btnsearchList = new JButton("ê²€ìƒ‰");
+            btnsearchList.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 5));
             btnsearchList.setBounds(243, 85, 50, 25);
             pnlSearch.add(btnsearchList);
-            btnsearchList.addActionListener(bl);
+            btnsearchList.addActionListener(getB);
             
-            //Ãâ·ÂÃ¢ - °Ë»ö °á°ú
-            JPanel scrollSearchPanel = new JPanel(null);
+            //ì¶œë ¥ì°½ - ê²€ìƒ‰ ê²°ê³¼
+            scrollSearchPanel = new JPanel(null);
             scrollSearchPanel.setBackground(Color.cyan);
-            scrollSearchPanel.setPreferredSize(new Dimension(313, 1000));  //<---------°Ë»öÇßÀ» ¶§ ³ª¿À´Â ÇÁ·ÎÇÊ °³¼ö¿¡ µû¶ó¼­ ±æÀÌ Á¶Àı
+            scrollSearchPanel.setPreferredSize(new Dimension(313, 1000));  //<---------ê²€ìƒ‰í–ˆì„ ë•Œ ë‚˜ì˜¤ëŠ” í”„ë¡œí•„ ê°œìˆ˜ì— ë”°ë¼ì„œ ê¸¸ì´ ì¡°ì ˆ
             JScrollPane scrollSearch = new JScrollPane(scrollSearchPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scrollSearch.setBounds(0, 120, 313, 340);
             pnlSearch.add(scrollSearch);
 
       
-         //2-4)¼³Á¤
+         //2-4)ì„¤ì •
          pnlUpdateMyData = new JPanel(null);
          pnlUpdateMyData.setPreferredSize(new Dimension(313, 450));
          pnlUpdateMyData.setBackground(Color.white);
-            //title - ¼³Á¤
+            //title - ì„¤ì •
             JPanel titleUpdateMyData = new JPanel(null);
             titleUpdateMyData.setBackground (Color.WHITE);
-            JLabel updateMyData = new JLabel("¼³Á¤");
-            updateMyData.setFont(new Font("¸¼Àº °íµñ", Font.BOLD , 18));
+            JLabel updateMyData = new JLabel("ì„¤ì •");
+            updateMyData.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD , 18));
             updateMyData.setBounds(10,7,100,20);
             titleUpdateMyData.add(updateMyData);
             titleUpdateMyData.setBounds(0,0,310, 35);
             pnlUpdateMyData.add(titleUpdateMyData);
             
-            //ºñ¹Ğ¹øÈ£ º¯°æ
-               //label - ºñ¹Ğ¹øÈ£ º¯°æ
-               JLabel labelUpdatePassword = new JLabel("ºñ¹Ğ¹øÈ£ º¯°æ");
-               labelUpdatePassword.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 12));
+            //ë¹„ë°€ë²ˆí˜¸ ë³€ê²½
+               //label - ë¹„ë°€ë²ˆí˜¸ ë³€ê²½
+               JLabel labelUpdatePassword = new JLabel("ë¹„ë°€ë²ˆí˜¸ ë³€ê²½");
+               labelUpdatePassword.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 12));
                labelUpdatePassword.setBounds(10, 60, 100, 15);
                pnlUpdateMyData.add(labelUpdatePassword);
                      
-               //ÀÔ·ÂÃ¢ - ºñ¹Ğ¹øÈ£
+               //ì…ë ¥ì°½ - ë¹„ë°€ë²ˆí˜¸
                JPasswordField passwordFieldUpdate = new JPasswordField();
                passwordFieldUpdate.setBounds(10, 85, 230, 25);
                pnlUpdateMyData.add(passwordFieldUpdate);
                
-               //¹öÆ° - º¯°æ
-               JButton btnUpdatePassword = new JButton("º¯°æ");
-               btnUpdatePassword.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 8));
+               //ë²„íŠ¼ - ë³€ê²½
+               JButton btnUpdatePassword = new JButton("ë³€ê²½");
+               btnUpdatePassword.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 8));
                btnUpdatePassword.setBounds(243, 85, 50, 25);
                btnUpdatePassword.addActionListener(bl);
                pnlUpdateMyData.add(btnUpdatePassword);
             
-            //º°¸í º¯°æ
-               //label - º°¸í º¯°æ
-               JLabel labelNicknameUpdate = new JLabel("º°¸í º¯°æ");
-               labelNicknameUpdate.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 12));
+            //ë³„ëª… ë³€ê²½
+               //label - ë³„ëª… ë³€ê²½
+               JLabel labelNicknameUpdate = new JLabel("ë³„ëª… ë³€ê²½");
+               labelNicknameUpdate.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 12));
                labelNicknameUpdate.setBounds(10, 130, 100, 15);
                pnlUpdateMyData.add(labelNicknameUpdate);
                      
-               //ÀÔ·ÂÃ¢ - º°¸í
+               //ì…ë ¥ì°½ - ë³„ëª…
                JTextField txtFieldNicknameUpdate = new JTextField();
                txtFieldNicknameUpdate.setBounds(10, 155, 230, 25);
                pnlUpdateMyData.add(txtFieldNicknameUpdate);
                
-               //¹öÆ° - º¯°æ
-               JButton btnUpdateNickname = new JButton("º¯°æ");
-               btnUpdateNickname.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 8));
+               //ë²„íŠ¼ - ë³€ê²½
+               JButton btnUpdateNickname = new JButton("ë³€ê²½");
+               btnUpdateNickname.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 8));
                btnUpdateNickname.setBounds(243, 155, 50, 25);
                btnUpdateNickname.addActionListener(bl);
                pnlUpdateMyData.add(btnUpdateNickname);
                
-            //¿À´ÃÀÇ ÇÑ¸¶µğ º¯°æ
-               //label - ¿À´ÃÀÇ ÇÑ¸¶µğ º¯°æ
-               JLabel labelSentenceUpdate = new JLabel("¿À´ÃÀÇ ÇÑ¸¶µğ º¯°æ");
-               labelSentenceUpdate.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 12));
+            //ì˜¤ëŠ˜ì˜ í•œë§ˆë”” ë³€ê²½
+               //label - ì˜¤ëŠ˜ì˜ í•œë§ˆë”” ë³€ê²½
+               JLabel labelSentenceUpdate = new JLabel("ì˜¤ëŠ˜ì˜ í•œë§ˆë”” ë³€ê²½");
+               labelSentenceUpdate.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 12));
                labelSentenceUpdate.setBounds(10, 202, 150, 15);
                pnlUpdateMyData.add(labelSentenceUpdate);
                      
-               //ÀÔ·ÂÃ¢ - º°¸í
+               //ì…ë ¥ì°½ - ë³„ëª…
                JTextField txtFieldSentenceUpdate = new JTextField();
                txtFieldSentenceUpdate.setBounds(10, 225, 230, 25);
                pnlUpdateMyData.add(txtFieldSentenceUpdate);
                
-               //¹öÆ° - º¯°æ
-               JButton btnUpdateSentence = new JButton("º¯°æ");
-               btnUpdateSentence.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 8));
+               //ë²„íŠ¼ - ë³€ê²½
+               JButton btnUpdateSentence = new JButton("ë³€ê²½");
+               btnUpdateSentence.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 8));
                btnUpdateSentence.setBounds(243, 225, 50, 25);
                btnUpdateSentence.addActionListener(bl);
                pnlUpdateMyData.add(btnUpdateSentence);
                
-            //Å»Åğ ¹öÆ°
-            JButton btnWithdrawal = new JButton("Å»Åğ");
-            btnWithdrawal.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN , 8));
+            //íƒˆí‡´ ë²„íŠ¼
+            JButton btnWithdrawal = new JButton("íƒˆí‡´");
+            btnWithdrawal.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 8));
             btnWithdrawal.setBounds(10, 270, 50, 25);
             btnWithdrawal.addActionListener(bl);
             pnlUpdateMyData.add(btnWithdrawal);
@@ -306,7 +314,7 @@ class MyFrame extends JFrame{
       
       
       
-      //3) ¾Æ·¡ panel - °ø°øµ¥ÀÌÅÍ »ç¿ë
+      //3) ì•„ë˜ panel - ê³µê³µë°ì´í„° ì‚¬ìš©
       bottom = new JPanel(null);
       bottom.setBounds(0,460,405,135);
       Color bottomColor = new Color(248,248,248);
@@ -318,6 +326,74 @@ class MyFrame extends JFrame{
       contentPane.add(panel, BorderLayout.CENTER);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
+   }
+   class get_Button implements ActionListener{
+	   public void actionPerformed (ActionEvent e) {
+		   JButton b = (JButton)e.getSource();
+		   if(b.getText().equals("ê²€ìƒ‰")) {
+			   String s=txtFieldSearch.getText();
+			  
+			   if(s.equals("") || s.equals(null)) {
+				   
+			   }else {
+				   
+				   String[] sample=null;
+				   try {
+				   sample = o.find_friends(s);
+				   } catch (Exception e1) {
+				   // TODO Auto-generated catch block
+				   e1.printStackTrace();
+				   }
+				   
+				   scrollSearchPanel.updateUI();
+				   scrollSearchPanel.removeAll();
+				   scrollSearchPanel.revalidate();
+				   scrollSearchPanel.repaint();
+				   //scrollSearchPanel=new JPanel(null);
+				   
+				   scrollSearchPanel.setPreferredSize(new Dimension(313, 1000)); 
+				   scrollSearchPanel.setBackground(Color.black);
+			      int Psize=Integer.parseInt(sample[0]);
+			      int Pnum=1;
+			      
+			      while(Psize>Pnum) {
+			    	  
+			    	  JPanel profile = new JPanel(null);
+			            profile.setBackground (Color.white);
+			            profile.setBounds(0,(Pnum-1)*80,310,80);
+			                  //í”„ë¡œí•„ì‚¬ì§„
+			                  ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : ë¡œê·¸ì¸ í•œ ì‚¬ëŒì˜ í”„ë¡œí•„ì‚¬ì§„
+			                  Image img = icon.getImage();
+			                  Image changeImg = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+			                  ImageIcon changeIcon = new ImageIcon(changeImg);
+			                  JLabel profileImg = new JLabel(changeIcon);
+			                  profileImg.setBounds(10,15,50,50);
+			                  profile.add(profileImg);
+			                  //ë³„ëª…
+			                  JLabel nickname = new JLabel("í”„ë¡œí•„ë³„ëª…"); //<----------------------- DB : ë¡œê·¸ì¸ í•œ ì‚¬ëŒì˜ ë³„ëª…
+			                  nickname.setBounds(70,27,100,10);
+			                  nickname.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD , 10));
+			                  profile.add(nickname);
+			                  //ì˜¤ëŠ˜ì˜ í•œë§ˆë””
+			                  JLabel message = new JLabel("ì˜¤ëŠ˜ì˜í•œë§ˆë””ì˜¤ëŠ˜ì˜í•œë§ˆë””ì˜¤ëŠ˜ì˜í•œë§ˆë””ì˜¤ëŠ˜ì˜í•œë§ˆë””"); //<----------------------- DB : ë¡œê·¸ì¸ í•œ ì‚¬ëŒì˜ "ì˜¤ëŠ˜ì˜ í•œë§ˆë””"
+			                  message.setBounds(70,45,180,10);
+			                  message.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN , 10));
+			                  profile.add(message);
+			                  //ì˜¨ì˜¤í”„ë¼ì¸ ìƒíƒœ
+			                  DrawPanel d = new DrawPanel();
+			                  d.setBounds(270, 35, 10, 10);
+			                  profile.add(d);
+			         
+			         scrollSearchPanel.add(profile);
+			         Pnum++;
+			      }
+			   }
+			   txtFieldSearch.setText("");
+		      //ìŠ¤í¬ë¡¤ paneì€ ìŠ¤í¬ë¡¤ë°”ê°€ í¬í•¨ëœ objectë¥¼ ìƒì„±í•˜ëŠ” ë¶€ë¶„ì´ë‹¤. ê·¸ëŸ¼ ì´ ë¶€ë¶„ì—ì„œ scrollSearchPanelíŒ¨ë„ì„ ìŠ¤í¬ë¡¤ë°”ê°€ ì¡´ì¬í•˜ëŠ” objectì— ì‚½ì…í•´
+		      //ìŠ¤í¬ë¡¤ íš¨ê³¼ë¥¼ ì¶”ê°€
+	           
+		   }
+	   }
    }
    
    class ButtonListener implements ActionListener{
@@ -391,33 +467,33 @@ class MyFrame extends JFrame{
             friends = new ImageIcon(changeImg1);
             btnFriend = new JButton(friends);
             btnFriend.setBounds(20, 20, 40, 40);
-            btnFriend.setBorderPainted(false); //button Å×µÎ¸®
-            btnFriend.setContentAreaFilled(false); //button ¹è°æ
-            btnFriend.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸®
+            btnFriend.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnFriend.setContentAreaFilled(false); //button ë°°ê²½
+            btnFriend.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬
             img2 = icon2.getImage();
             changeImg2 = img2.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
             chat = new ImageIcon(changeImg2);
             btnChat = new JButton(chat);
             btnChat.setBounds(20, 80, 40, 40);
-            btnChat.setBorderPainted(false); //button Å×µÎ¸®
-            btnChat.setContentAreaFilled(false); //button ¹è°æ
-            btnChat.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸®
+            btnChat.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnChat.setContentAreaFilled(false); //button ë°°ê²½
+            btnChat.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬
             img3 = icon3.getImage();
             changeImg3 = img3.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
             search = new ImageIcon(changeImg3);
             btnSearch = new JButton(search);
             btnSearch.setBounds(20, 140, 40, 40);
-            btnSearch.setBorderPainted(false); //button Å×µÎ¸®
-            btnSearch.setContentAreaFilled(false); //button ¹è°æ
-            btnSearch.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸®
+            btnSearch.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnSearch.setContentAreaFilled(false); //button ë°°ê²½
+            btnSearch.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬
             img4 = icon4.getImage();
             changeImg4 = img4.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
             setting = new ImageIcon(changeImg4);
             btnUpdateMyData = new JButton(setting);
             btnUpdateMyData.setBounds(20, 410, 40, 40);
-            btnUpdateMyData.setBorderPainted(false); //button Å×µÎ¸®
-            btnUpdateMyData.setContentAreaFilled(false); //button ¹è°æ
-            btnUpdateMyData.setFocusPainted(false); //button ¾È¿¡ µé¾îÀÖ´Â ÀÌ¹ÌÁö Å×µÎ¸® 
+            btnUpdateMyData.setBorderPainted(false); //button í…Œë‘ë¦¬
+            btnUpdateMyData.setContentAreaFilled(false); //button ë°°ê²½
+            btnUpdateMyData.setFocusPainted(false); //button ì•ˆì— ë“¤ì–´ìˆëŠ” ì´ë¯¸ì§€ í…Œë‘ë¦¬ 
             
             left.add(btnFriend);
             left.add(btnChat);
@@ -434,19 +510,14 @@ class MyFrame extends JFrame{
             panel.add(left);   
       }
    }
-   
-   public static void main(String[] args) {
-      MyFrame m = new MyFrame();
-   }
-   
-   class DrawPanel extends JPanel {  //<----------¿Â¿ÀÇÁ¶óÀÎ ³ªÅ¸³»´Â µ¿±×¶ó¹Ì °ü·Ã ÇÔ¼ö
-      String state = ""; //<--------------------- DB¿¡¼­ »óÅÂ¸¦ ÀĞ¾î¼­ state¶ó´Â string º¯¼ö¿¡ ÀúÀå
+   public class DrawPanel extends JPanel {  //<----------ì˜¨ì˜¤í”„ë¼ì¸ ë‚˜íƒ€ë‚´ëŠ” ë™ê·¸ë¼ë¯¸ ê´€ë ¨ í•¨ìˆ˜
+      String state = ""; //<--------------------- DBì—ì„œ ìƒíƒœë¥¼ ì½ì–´ì„œ stateë¼ëŠ” string ë³€ìˆ˜ì— ì €ì¥
       
       @Override
       public void paint(Graphics g) {
          super.paint(g);
-         g.setColor(Color.RED); //»óÅÂ default°ªÀ¸·Î "off"·Î ÇØ³õ´Â´Ù 
-         if (state.equalsIgnoreCase("on") == true) {   //<------------ DB¿¡¼­ ÀĞ¾úÀ» ¶§ on »óÅÂÀÏ °æ¿ì
+         g.setColor(Color.RED); //ìƒíƒœ defaultê°’ìœ¼ë¡œ "off"ë¡œ í•´ë†“ëŠ”ë‹¤ 
+         if (state.equalsIgnoreCase("on") == true) {   //<------------ DBì—ì„œ ì½ì—ˆì„ ë•Œ on ìƒíƒœì¼ ê²½ìš°
             g.setColor(Color.GREEN);
          }
          g.fillOval(0, 0, 10, 10);

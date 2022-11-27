@@ -20,9 +20,9 @@ public class Server {
 			pool.execute(new Capitalizer(sock));
 		}
 	}
-	
+	static Database db = new Database();
 	private static class Capitalizer implements Runnable{
-		static Database db = new Database();
+		//static Database db = new Database();
 		private Socket socket;
 		Capitalizer(Socket socket){
 			this.socket=socket;
@@ -46,6 +46,25 @@ public class Server {
 						System.out.println("Sid : "+id+"\nSpass : "+pass);
 						boolean check=db.logincheck(id, pass);
 						out.println(check);
+					}else if(request.equals("find_friends")) {
+						
+						//클라이언트 측에서 더 이상의 요청이 없음 예외처리(505)
+						String id=in.nextLine();
+						String s[]=db.find_friend(id);
+						
+						int num=Integer.parseInt(s[0]);
+						
+						if(s[0].equals("")){
+							num=0;
+						}
+						
+						String s1=s[0];
+						int i=1;
+						while(i<num) {
+							s1=s1+'/'+s[i];
+							i++;
+						}
+						out.println(s1);
 					}
 					}catch(Exception e) {
 						//확인되지 않은 예외처리(???)
