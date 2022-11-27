@@ -96,9 +96,7 @@ public class ApiExplorer {
 				time=baseTime.toString();
 				System.out.println(day+"  "+time);
 			}
-			System.out.print("/t baseDate : "+ baseDate);
-			System.out.print(", baseTime : "+ baseTime);
-			System.out.print(",category : "+ category);
+			System.out.print("\tcategory : "+ category);
 			System.out.println(", obsrValue : "+ obsrValue);
 			
 		}
