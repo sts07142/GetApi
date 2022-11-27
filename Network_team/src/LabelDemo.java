@@ -24,6 +24,7 @@ public class LabelDemo extends JFrame{
       o=_o;
       setTitle ("Kakaotalk");
       setSize (WIDTH, HEIGHT);
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setLocationRelativeTo(null);   //실행했을 때 frame창 화면을 컴퓨터 가운데에 배치 : 참고 <https://kkh0977.tistory.com/595>
       setResizable(false);   //frame창 크기 고정 : 참고 <https://kkh0977.tistory.com/595>
       Color backgroundColor = new Color(250, 225, 0);
