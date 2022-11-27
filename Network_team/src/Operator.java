@@ -1,38 +1,52 @@
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 
-public class makeServerInformation {
-   public static void main(String[] args) {
+public class Operator{
+   LabelDemo LD=null;
+   //main구문에서 각 클래스에 대한 생성자를 null로 초기화하고 이를 매개변수로 사용한다.
+   //
+   Socket socket=null;
+   Scanner in;
+   PrintWriter out;
+   Operator() throws UnknownHostException, IOException{
       int port_num=7777;
+      String host="localhost";
       try {
-         //서버의 ip address와 port number에 대한 정보를 가진 파일을 만들기
          
-         String message="127.0.0.1";
-         File file=new File("server_info.dat");
-         if(file.exists()) {
-        	 file.delete();
-         }
-         file.createNewFile();
+         FileInputStream fis=new FileInputStream("server_info.dat");
+         BufferedInputStream bis=new BufferedInputStream(fis);
+         DataInputStream ois=new DataInputStream(bis);
          
-         FileOutputStream temp=new FileOutputStream(file);
-         BufferedOutputStream temp1=new BufferedOutputStream(temp);
-         DataOutputStream temp2=new DataOutputStream(temp1);
-         temp2.flush();
-         temp2.writeUTF(message);
-         temp2.writeInt(port_num);
-         
-         temp2.close();
-         temp1.close();
-         temp.close();
-         
+         host=ois.readUTF();
+         port_num=ois.readInt();
+         ois.close();
+         bis.close();
+         fis.close();
       }catch(IOException e) {
          System.out.println(e.getMessage());
       }
+
+      socket=new Socket(host,port_num);
+      in=new Scanner(socket.getInputStream());
+      out=new PrintWriter(socket.getOutputStream(), true);
+   }
+   public static void main(String[] args) throws Exception{
+      
+      Operator opt = new Operator();
+      opt.LD = new LabelDemo(opt);
+   }
+   boolean request_login(String user_id, String pass) throws Exception {
+      out.println("login");
+      out.println(user_id);
+      out.println(pass);
+      boolean num=in.nextBoolean();
+      return num;
    }
 }
+//
