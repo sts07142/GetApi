@@ -31,7 +31,7 @@ class MyFrame extends JFrame{
       setSize (WIDTH, HEIGHT);
       setLocationRelativeTo(null);
       setResizable(false);
-      
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       Container contentPane = getContentPane();
       
       //0) 전체 panel - 왼쪽, 중앙, 아래를 합친
