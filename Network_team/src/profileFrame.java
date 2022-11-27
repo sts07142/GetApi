@@ -25,7 +25,7 @@ class profileFrame extends JFrame {
          contentPane.add(panelAll, BorderLayout.CENTER);
          
          //1) 프로필 사진
-         ImageIcon icon = new ImageIcon("C:\\Users\\82105\\Desktop\\profile2.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
+         ImageIcon icon = new ImageIcon("src/image/profile2.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
          Image img = icon.getImage();
          Image changeImg = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
          ImageIcon changeIcon = new ImageIcon(changeImg);
