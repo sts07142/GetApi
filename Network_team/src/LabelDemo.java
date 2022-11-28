@@ -14,7 +14,9 @@ public class LabelDemo extends JFrame{
    
    JLabel kakaoLogo,kakaoLogo2,kakaoLogo3;
    JTextField loginIdText;
+   
    JTextField signupIdText,nicknameText,nameText,emailText,birthText,sayingText,phoneText,urlText;
+   
    JTextField findNameText,findEmailText;
    JPasswordField loginPwText,signupPwText;
    ButtonListener bl = new ButtonListener();
@@ -24,7 +26,6 @@ public class LabelDemo extends JFrame{
       o=_o;
       setTitle ("Kakaotalk");
       setSize (WIDTH, HEIGHT);
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setLocationRelativeTo(null);   //실행했을 때 frame창 화면을 컴퓨터 가운데에 배치 : 참고 <https://kkh0977.tistory.com/595>
       setResizable(false);   //frame창 크기 고정 : 참고 <https://kkh0977.tistory.com/595>
       Color backgroundColor = new Color(250, 225, 0);
@@ -116,6 +117,8 @@ public class LabelDemo extends JFrame{
 	  
 	  signupPwText=new JPasswordField();
 	  doSignupBtn=new JButton("계정 생성하기");
+	  
+	  //버튼 기능 추가
       doSignupBtn.addActionListener(bl);
 	  signupIdText.setBounds(20,150,333,30);
 	  signupPwText.setBounds(20,150+30*1,333,30);
@@ -126,7 +129,7 @@ public class LabelDemo extends JFrame{
 	  sayingText.setBounds(20,150+30*6,333,30);
 	  phoneText.setBounds(20,150+30*7,333,30);//optional
 	  urlText.setBounds(20,150+30*8,333,30);//optional
-	  
+
 	  doSignupBtn.setBounds(20,150+30*10,333,30);
 	  
 	  content2.add(signupIdText);
@@ -152,10 +155,8 @@ public class LabelDemo extends JFrame{
       content3.add(findNameText);
       content3.add(findEmailText);
       content3.add(doFindIdBtn);
-      
-      
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    }
-
    class ButtonListener implements ActionListener{
        @Override
        public void actionPerformed(ActionEvent e) {
@@ -185,6 +186,7 @@ public class LabelDemo extends JFrame{
                 		//id & pw correct
 	                  System.out.println("login success");
 	                  JOptionPane.showMessageDialog(null, "login success");
+	                  o.mainFrame=new MyFrame(o, uid);
 	                  //로그인 후에 보이는 창화면 설정
 	                  dispose();
 	                  //새로운 패널 클래스로 넘어간다.
@@ -215,13 +217,27 @@ public class LabelDemo extends JFrame{
         		  JOptionPane.showMessageDialog(null, "Fill essential informations");
         	  }else {
             	  //jdbc if there isn't ID, then make account
-        		  if(signupIdText.getText()=="is already in DB") {
-        			  JOptionPane.showMessageDialog(null, "ID \'"+signupIdText.getText()+"\' is already used");
-        		  }else {
-		        	  content.setVisible(true);
-		        	  content2.setVisible(false);
-		        	  content3.setVisible(false);
-        		  }
+        		  System.out.println(1);
+        		  try {
+        			  String s=signupIdText.getText();
+					if(!o.check_id(s)) {
+						  JOptionPane.showMessageDialog(null, "ID \'"+signupIdText.getText()+"\' is already used");
+					 }else {
+						  //계정 추가
+						  o.sign_up(signupIdText.getText(), signupIdText.getText(),nicknameText.getText(),nameText.getText(),emailText.getText(),
+								  birthText.getText(),sayingText.getText(),phoneText.getText(),urlText.getText());
+						  JOptionPane.showMessageDialog(null, "회원가입 성공");
+						  content.setVisible(true);
+						  content2.setVisible(false);
+						  content3.setVisible(false);
+					  }
+				} catch (HeadlessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
         	  }
           }else if(b.getText().equals("로그인 화면으로 돌아가기")) {
         	  //complete, no more code need
@@ -236,9 +252,5 @@ public class LabelDemo extends JFrame{
           }
        }
     }
-   public static void main(String[] args) throws Exception{
-	      
-	      Operator opt = new Operator();
-	      opt.LD = new LabelDemo(opt);
-	   }
+
 }

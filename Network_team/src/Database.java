@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
 
@@ -55,14 +57,32 @@ public class Database {
 				}
 				count++;
 			}
+			
+			
 		} catch(Exception e) {
 			flag = false;
 			System.out.println("Login failed > " + e.toString());
 		}
-		
+		second_UPstate(id);
 		return flag;
 	}
 	
+	boolean check_id(String _i) {
+		boolean flag=true;
+		String id = _i;
+		try {
+			String checkingStr = "SELECT user_id FROM USER WHERE user_id=\'" + id + "\'";
+			ResultSet result = stmt.executeQuery(checkingStr);
+			
+			while(result.next()) {
+				String s= result.getString(1);
+				//만약 값이 존재하지 않으면 문자열을 1로 초기화해 이미지가 없다고 알림
+				if (result.equals(id)) return false;
+			}
+		} catch(Exception e) {
+		}
+		return flag;
+	}
 	//유저가 등록한 이미지를 가지고 온다.
 	String get_profile(String _i) {
 		String user_id = _i;
@@ -82,13 +102,13 @@ public class Database {
 	
 	
 	
-	boolean signUP(String _i, String _p,String _n, String email,String _y, String phoneNumber, String git) {
+	void signUP(String _i, String _p,String _n, String nick, String _y,String email, String saying ,String phoneNumber, String git) {
 		boolean flag = false;
 		String id = _i;
 		String pw = _p;
 		String name = _n;
 		String year = _y;
-		String sql = "insert into USER values (?,?,?,?,?,?,?)";
+		String sql = "insert into USER values (?,?,?,?,?,?,?,?)";
 		try {
 			
 
@@ -97,33 +117,61 @@ public class Database {
 			pstmt.setString(1, id);
 			pstmt.setString(2, pw);
 			pstmt.setString(3, name);
-			pstmt.setString(4, email);
-			pstmt.setString(5, year);
-			pstmt.setString(6, phoneNumber);
-			pstmt.setString(7, git);
-			
+			pstmt.setString(4, nick);
+			pstmt.setString(5, email);
+			pstmt.setString(6, year);
+			pstmt.setString(7, phoneNumber);
+			pstmt.setString(8, git);
 
 			int r = pstmt.executeUpdate();
-			JOptionPane.showMessageDialog(null, "joining completed!", "joined", 1);
 		} catch (SQLException e1) {
 			System.out.println("SQL error" + e1.getMessage());
-			if (e1.getMessage().contains("PRIMARY")) {
-				JOptionPane.showMessageDialog(null, "Duplicate ID!", "Duplicate ID error", 1);
-				return false;
-			}else
-				JOptionPane.showMessageDialog(null, "Registration error!", "error", 1);
 		}
 		
-		flag=true;
+		first_UPstate(id, saying);
+	}
+	void first_UPstate(String _i, String saying) {
+		String id = _i;
 		
-		return flag;
+		String sql = "insert into STATE values (?,?,?,?,?)";
+		try {
+			Date date = new Date();
+			
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			System.out.println(df.format(date));
+			pstmt.setString(1, id);
+			pstmt.setString(2, saying);
+			pstmt.setString(3, null);
+			pstmt.setString(4, df.format(date));
+			pstmt.setInt(5, 0);
+			
+			int r = pstmt.executeUpdate();
+			
+		} catch (SQLException e1) {
+			System.out.println("SQL error" + e1.getMessage());
+		
+		}
+	}
+	void second_UPstate(String _i) {
+		String id = _i;
+		int count=0;
+		Date date = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		try {
+			stmt = con.createStatement();
+			String update = "update STATE set access_time =\'"+df.format(date)+"\', login=\'"+1+"\' where user_id=\'"+id+"\'";
+			count = stmt.executeUpdate(update);
+		} catch(Exception e) {
+		}
 	}
 	
-	String[] find_friend(String user_id) {
+	String[] find_friend(String other,String user_id) {
 		String[] p=new String[30]; 
 		int count = 1;
 		try {
-			String checkingStr = "SELECT user_id FROM USER where user_id LIKE \'%"+user_id+"%\'";
+			String checkingStr = "SELECT user_id FROM USER where user_id LIKE \'%"+other+"%\' and user_id !=\'"+user_id+"\'";
 			ResultSet result = stmt.executeQuery(checkingStr);
 			//게시물은 여러개이다 보니 while문을 통해 게시물의 정보를 계속해서 읽어나간다.
 			while(result.next()) {
@@ -136,6 +184,27 @@ public class Database {
 		}
 		//게시물의 개수를 배열의 0번째에 대입한다.
 		p[0]=Integer.toString(count);
+		return p;
+	}
+	String[] get_information(String user_id) {
+		String[] p=new String[3]; 
+		int count = 0;
+		try {
+			String checkingStr = "SELECT nick_name, saying FROM USER natural join STATE where user_id = \'"+user_id+"\'";
+			ResultSet result = stmt.executeQuery(checkingStr);
+			//게시물은 여러개이다 보니 while문을 통해 게시물의 정보를 계속해서 읽어나간다.
+			while(result.next()) {
+				p[count] = result.getString(1);
+				if (result.wasNull()) p[count] = null;
+				count++;
+				p[count] = result.getString(1);
+				if (result.wasNull()) p[count] = null;
+				count++;
+			}
+		} catch(Exception e) {
+			
+		}
+		//게시물의 개수를 배열의 0번째에 대입한다.
 		return p;
 	}
 }

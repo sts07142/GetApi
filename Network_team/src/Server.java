@@ -49,8 +49,9 @@ public class Server {
 					}else if(request.equals("find_friends")) {
 						
 						//클라이언트 측에서 더 이상의 요청이 없음 예외처리(505)
+						String other=in.nextLine();
 						String id=in.nextLine();
-						String s[]=db.find_friend(id);
+						String s[]=db.find_friend(other, id);
 						
 						int num=Integer.parseInt(s[0]);
 						
@@ -65,6 +66,36 @@ public class Server {
 							i++;
 						}
 						out.println(s1);
+					}else if(request.equals("get_information")) {
+						String id=in.nextLine();
+						String s[]=db.get_information(id);
+						
+						String s1=s[0];
+						int i=1;
+						while(i<2) {
+							s1=s1+'/'+s[i];
+							i++;
+						}
+						System.out.println(s1);
+						out.println(s1);
+					}else if(request.equals("check_id")) {
+						//클라이언트 측에서 더 이상의 요청이 없음 예외처리(505)
+						String id=in.nextLine();
+						boolean check=db.check_id(id);
+						System.out.println("server_check"+check);
+						out.println(check);
+					}else if(request.equals("sign_up")) {
+						String id=in.nextLine();
+						String pass=in.nextLine();
+						String name=in.nextLine();
+						String nick=in.nextLine();
+						String email=in.nextLine();
+						String birth=in.nextLine();
+						String saying=in.nextLine();
+						String phone=in.nextLine();
+						String url=in.nextLine();
+						db.signUP(id, pass ,name, nick, birth, email, saying, phone, url);
+						
 					}
 					}catch(Exception e) {
 						//확인되지 않은 예외처리(???)

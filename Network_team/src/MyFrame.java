@@ -31,7 +31,7 @@ class MyFrame extends JFrame{
       setSize (WIDTH, HEIGHT);
       setLocationRelativeTo(null);
       setResizable(false);
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      
       Container contentPane = getContentPane();
       
       //0) 전체 panel - 왼쪽, 중앙, 아래를 합친
@@ -126,6 +126,13 @@ class MyFrame extends JFrame{
             JPanel profile = new JPanel(null);
             profile.setBackground (Color.white);
             profile.setBounds(0,35,310, 80);
+            String inform1[]=null;
+            try {
+            	inform1=o.get_information(user_id);
+            } catch (Exception e1) {
+            	// TODO Auto-generated catch block
+            	e1.printStackTrace();
+            }
                   //프로필사진
                   ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
                   Image img = icon.getImage();
@@ -135,12 +142,12 @@ class MyFrame extends JFrame{
                   profileImg.setBounds(10,15,50,50);
                   profile.add(profileImg);
                   //별명
-                  JLabel nickname = new JLabel("프로필별명"); //<----------------------- DB : 로그인 한 사람의 별명
+                  JLabel nickname = new JLabel(inform1[0]); //<----------------------- DB : 로그인 한 사람의 별명
                   nickname.setBounds(70,27,100,10);
                   nickname.setFont(new Font("맑은 고딕", Font.BOLD , 10));
                   profile.add(nickname);
                   //오늘의 한마디
-                  JLabel message = new JLabel("오늘의한마디오늘의한마디오늘의한마디오늘의한마디"); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
+                  JLabel message = new JLabel(inform1[1]); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
                   message.setBounds(70,45,180,10);
                   message.setFont(new Font("맑은 고딕", Font.PLAIN , 10));
                   profile.add(message);
@@ -339,7 +346,7 @@ class MyFrame extends JFrame{
 				   
 				   String[] sample=null;
 				   try {
-				   sample = o.find_friends(s);
+				   sample = o.find_friends(s, user_id);
 				   } catch (Exception e1) {
 				   // TODO Auto-generated catch block
 				   e1.printStackTrace();
@@ -361,6 +368,13 @@ class MyFrame extends JFrame{
 			    	  JPanel profile = new JPanel(null);
 			            profile.setBackground (Color.white);
 			            profile.setBounds(0,(Pnum-1)*80,310,80);
+			            String inform[]=null;
+			            try {
+			            	inform=o.get_information(sample[Pnum]);
+			            } catch (Exception e1) {
+			            	// TODO Auto-generated catch block
+			            	e1.printStackTrace();
+			            }
 			                  //프로필사진
 			                  ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
 			                  Image img = icon.getImage();
@@ -370,12 +384,12 @@ class MyFrame extends JFrame{
 			                  profileImg.setBounds(10,15,50,50);
 			                  profile.add(profileImg);
 			                  //별명
-			                  JLabel nickname = new JLabel("프로필별명"); //<----------------------- DB : 로그인 한 사람의 별명
+			                  JLabel nickname = new JLabel(inform[0]); //<----------------------- DB : 로그인 한 사람의 별명
 			                  nickname.setBounds(70,27,100,10);
 			                  nickname.setFont(new Font("맑은 고딕", Font.BOLD , 10));
 			                  profile.add(nickname);
 			                  //오늘의 한마디
-			                  JLabel message = new JLabel("오늘의한마디오늘의한마디오늘의한마디오늘의한마디"); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
+			                  JLabel message = new JLabel(inform[1]); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
 			                  message.setBounds(70,45,180,10);
 			                  message.setFont(new Font("맑은 고딕", Font.PLAIN , 10));
 			                  profile.add(message);
@@ -510,19 +524,6 @@ class MyFrame extends JFrame{
             panel.add(left);   
       }
    }
-   public class DrawPanel extends JPanel {  //<----------온오프라인 나타내는 동그라미 관련 함수
-      String state = ""; //<--------------------- DB에서 상태를 읽어서 state라는 string 변수에 저장
-      
-      @Override
-      public void paint(Graphics g) {
-         super.paint(g);
-         g.setColor(Color.RED); //상태 default값으로 "off"로 해놓는다 
-         if (state.equalsIgnoreCase("on") == true) {   //<------------ DB에서 읽었을 때 on 상태일 경우
-            g.setColor(Color.GREEN);
-         }
-         g.fillOval(0, 0, 10, 10);
-         
-      }
-   }
+
    
 }
