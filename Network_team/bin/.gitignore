@@ -6,6 +6,7 @@
 /LabelDemo$ButtonListener.class
 /LabelDemo.class
 /MyFrame$ButtonListener.class
+/MyFrame$Buttonplus.class
 /MyFrame$get_Button.class
 /MyFrame.class
 /Operator.class
@@ -17,4 +18,5 @@
 /image/
 /makeServerInformation.class
 /profileFrame.class
-/MyFrame$Buttonplus.class
+/LabelDemo$1.class
+/LabelDemo$2.class

@@ -1,5 +1,6 @@
 import java.util.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,7 +8,7 @@ import java.net.*;
 import java.io.*;
 
 public class LabelDemo extends JFrame{
-   public static final int WIDTH = 373;
+   public static final int WIDTH = 385;
    public static final int HEIGHT = 595;
    private JButton loginBtn, signupBtn, findIdBtn,doSignupBtn,backtoLoginBtn[],doFindIdBtn;
    Operator o=null;
@@ -22,23 +23,23 @@ public class LabelDemo extends JFrame{
    ButtonListener bl = new ButtonListener();
    Container contentPane;
    JPanel content,content2,content3;
-   public LabelDemo (Operator _o) {
-      o=_o;
+   public LabelDemo (/*Operator _o*/) {
+      /*o=_o;*/
       setTitle ("Kakaotalk");
       setSize (WIDTH, HEIGHT);
-      setLocationRelativeTo(null);   //ì‹¤í–‰í–ˆì„ ë•Œ frameì°½ í™”ë©´ì„ ì»´í“¨í„° ê°€ìš´ë°ì— ë°°ì¹˜ : ì°¸ê³  <https://kkh0977.tistory.com/595>
-      setResizable(false);   //frameì°½ í¬ê¸° ê³ ì • : ì°¸ê³  <https://kkh0977.tistory.com/595>
+      setLocationRelativeTo(null);   //½ÇÇàÇßÀ» ¶§ frameÃ¢ È­¸éÀ» ÄÄÇ»ÅÍ °¡¿îµ¥¿¡ ¹èÄ¡ : Âü°í <https://kkh0977.tistory.com/595>
+      setResizable(false);   //frameÃ¢ Å©±â °íÁ¤ : Âü°í <https://kkh0977.tistory.com/595>
       Color backgroundColor = new Color(250, 225, 0);
       backtoLoginBtn=new JButton[2];
-      backtoLoginBtn[0]=new JButton("ë¡œê·¸ì¸ í™”ë©´ìœ¼ë¡œ ëŒì•„ê°€ê¸°");
-      backtoLoginBtn[1]=new JButton("ë¡œê·¸ì¸ í™”ë©´ìœ¼ë¡œ ëŒì•„ê°€ê¸°");
+      backtoLoginBtn[0]=new JButton("·Î±×ÀÎ È­¸éÀ¸·Î µ¹¾Æ°¡±â");
+      backtoLoginBtn[1]=new JButton("·Î±×ÀÎ È­¸éÀ¸·Î µ¹¾Æ°¡±â");
       backtoLoginBtn[0].setBounds(20,500,333,30);
       backtoLoginBtn[1].setBounds(20,500,333,30);
       backtoLoginBtn[0].addActionListener(bl);
       backtoLoginBtn[1].addActionListener(bl);
       findNameText=new JTextField();
       findEmailText=new JTextField();
-      doFindIdBtn=new JButton("ID ì°¾ê¸°");
+      doFindIdBtn=new JButton("ID Ã£±â");
       doFindIdBtn.addActionListener(bl);
                 
       contentPane=getContentPane();
@@ -63,35 +64,51 @@ public class LabelDemo extends JFrame{
       content.setBackground(backgroundColor);
       content2.setBackground(backgroundColor);
       content3.setBackground(backgroundColor);
+      
       //login content
       ImageIcon icon = new ImageIcon("src/image/LOGO-05.png");
       Image img = icon.getImage();
       Image changeImg = img.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
       ImageIcon changeIcon = new ImageIcon(changeImg);
       kakaoLogo = new JLabel(changeIcon);
-      kakaoLogo.setBounds((WIDTH-150)/2,0,150,150);
+      kakaoLogo.setBounds((373-150)/2,40,150,150);
       kakaoLogo2 = new JLabel(changeIcon);
-      kakaoLogo2.setBounds((WIDTH-150)/2,0,150,150);
+      kakaoLogo2.setBounds((373-150)/2,40,150,150);
       kakaoLogo3 = new JLabel(changeIcon);
-      kakaoLogo3.setBounds((WIDTH-150)/2,0,150,150);
+      kakaoLogo3.setBounds((373-150)/2,40,150,150);
       content.add (kakaoLogo); 
       content2.add(kakaoLogo2);
       content3.add(kakaoLogo3);
       
-      loginIdText = new JTextField(); 
-      loginPwText = new JPasswordField();
-      loginBtn = new JButton ("ë¡œê·¸ì¸");
-      loginBtn.addActionListener(bl);//ë²„íŠ¼ ë¦¬ìŠ¤ë„ˆ
-      JLabel l1 = new JLabel("---------ë˜ëŠ”---------");
-      signupBtn = new JButton ("íšŒì›ê°€ì…");
-      signupBtn.addActionListener (bl);//ë²„íŠ¼ ë¦¬ìŠ¤ë„ˆ
+      loginIdText = new JTextField() {
+    	  @Override
+          public void setBorder(Border border) { //textfeild Å×µÎ¸® ¾ø¾Ö±â
+              
+          }
+      }; 
+      loginPwText = new JPasswordField() {
+    	  @Override
+          public void setBorder(Border border) { //textfeild Å×µÎ¸® ¾ø¾Ö±â
+              
+          }
+      };
+      loginBtn = new JButton ("·Î±×ÀÎ");
+      loginBtn.addActionListener(bl);//¹öÆ° ¸®½º³Ê
+      loginBtn.setBorderPainted(false); //¹öÆ° Å×µÎ¸® ¾ø¾Ö±â
+      loginBtn.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 14));
+      JLabel l1 = new JLabel("---------¶Ç´Â---------");
+      l1.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 14));
+      signupBtn = new JButton ("È¸¿ø°¡ÀÔ");
+      signupBtn.addActionListener (bl);//¹öÆ° ¸®½º³Ê
+      signupBtn.setBorderPainted(false); //¹öÆ° Å×µÎ¸® ¾ø¾Ö±â
+      signupBtn.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 14));
       
-      loginIdText.setBounds(20,150,333,30);
-      loginPwText.setBounds(20,180,333,30);
-      loginBtn.setBounds(20,210,333,30);
-      l1.setBounds(20,240,333,30);
+      loginIdText.setBounds(60,190,250,35);
+      loginPwText.setBounds(60,226,250,35);
+      loginBtn.setBounds(60,265,250,35);
+      l1.setBounds(60,300,250,35);
       l1.setHorizontalAlignment(JLabel.CENTER);
-      signupBtn.setBounds(20,270,333,30);
+      signupBtn.setBounds(60,335,250,35);
       
       content.add(loginIdText);
       content.add(loginPwText);
@@ -99,9 +116,12 @@ public class LabelDemo extends JFrame{
       content.add(l1);
       content.add(signupBtn);
       
-      findIdBtn = new JButton ("ì¹´ì¹´ì˜¤ê³„ì • ì°¾ê¸°");
-      findIdBtn.addActionListener (bl); //ë²„íŠ¼ ë¦¬ìŠ¤ë„ˆ
-      findIdBtn.setBounds(20,500,333,30);
+      findIdBtn = new JButton ("Ä«Ä«¿À°èÁ¤ Ã£±â");
+      findIdBtn.addActionListener (bl); //¹öÆ° ¸®½º³Ê
+      findIdBtn.setBorderPainted(false); //¹öÆ° Å×µÎ¸® ¾ø¾Ö±â
+      findIdBtn.setContentAreaFilled(false);
+      findIdBtn.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 11));
+      findIdBtn.setBounds(60,480,250,33);
       content.add(findIdBtn);
       
       content.setVisible(true);
@@ -116,9 +136,9 @@ public class LabelDemo extends JFrame{
 	  urlText=new JTextField();//optional
 	  
 	  signupPwText=new JPasswordField();
-	  doSignupBtn=new JButton("ê³„ì • ìƒì„±í•˜ê¸°");
+	  doSignupBtn=new JButton("°èÁ¤ »ı¼ºÇÏ±â");
 	  
-	  //ë²„íŠ¼ ê¸°ëŠ¥ ì¶”ê°€
+	  //¹öÆ° ±â´É Ãß°¡
       doSignupBtn.addActionListener(bl);
 	  signupIdText.setBounds(20,150,333,30);
 	  signupPwText.setBounds(20,150+30*1,333,30);
@@ -162,7 +182,7 @@ public class LabelDemo extends JFrame{
        public void actionPerformed(ActionEvent e) {
           JButton b = (JButton)e.getSource();
           
-          /* TextFieldì— ì…ë ¥ëœ ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ë¥¼ ë³€ìˆ˜ì— ì´ˆê¸°í™” */
+          /* TextField¿¡ ÀÔ·ÂµÈ ¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£¸¦ º¯¼ö¿¡ ÃÊ±âÈ­ */
           //PW decoding
           String uid = loginIdText.getText();
           String upass = "";
@@ -171,7 +191,7 @@ public class LabelDemo extends JFrame{
           }
           upass=encoding.encode(upass, upass.length());
           //press login Button
-          if(b.getText().equals("ë¡œê·¸ì¸")) {
+          if(b.getText().equals("·Î±×ÀÎ")) {
         	  content.setVisible(true);
         	  content2.setVisible(false);
         	  content3.setVisible(false);
@@ -182,15 +202,15 @@ public class LabelDemo extends JFrame{
                 System.out.println("login fail > Login information not entered");
              }else if(uid != null && upass != null) {
                 try {
-                	if(o.request_login(uid, upass)) {   //ì´ ë¶€ë¶„ì´ ë°ì´í„°ë² ì´ìŠ¤ì— ì ‘ì†í•´ ë¡œê·¸ì¸ ì •ë³´ë¥¼ í™•ì¸í•˜ëŠ” ë¶€ë¶„ì´ë‹¤.
+                	if(o.request_login(uid, upass)) {   //ÀÌ ºÎºĞÀÌ µ¥ÀÌÅÍº£ÀÌ½º¿¡ Á¢¼ÓÇØ ·Î±×ÀÎ Á¤º¸¸¦ È®ÀÎÇÏ´Â ºÎºĞÀÌ´Ù.
                 		//id & pw correct
 	                  System.out.println("login success");
 	                  JOptionPane.showMessageDialog(null, "login success");
 	                  o.mainFrame=new MyFrame(o, uid);
-	                  //ë¡œê·¸ì¸ í›„ì— ë³´ì´ëŠ” ì°½í™”ë©´ ì„¤ì •
+	                  //·Î±×ÀÎ ÈÄ¿¡ º¸ÀÌ´Â Ã¢È­¸é ¼³Á¤
 	                  dispose();
-	                  //ìƒˆë¡œìš´ íŒ¨ë„ í´ë˜ìŠ¤ë¡œ ë„˜ì–´ê°„ë‹¤.
-	                  //ë°ì´í„°ë² ì´ìŠ¤ í´ë˜ìŠ¤ë¥¼ ë„˜ê²¨ì¤€ë‹¤ .
+	                  //»õ·Î¿î ÆĞ³Î Å¬·¡½º·Î ³Ñ¾î°£´Ù.
+	                  //µ¥ÀÌÅÍº£ÀÌ½º Å¬·¡½º¸¦ ³Ñ°ÜÁØ´Ù .
                 	} else {
                 		//id & pw not correct
 	                  System.out.println("login fail > Login Information Mismatch");
@@ -200,17 +220,17 @@ public class LabelDemo extends JFrame{
 	               e1.printStackTrace();
 	            }
              }
-          }else if(b.getText().equals("íšŒì›ê°€ì…")) {
+          }else if(b.getText().equals("È¸¿ø°¡ÀÔ")) {
         	  //complete, no more code need
         	  content.setVisible(false);
         	  content2.setVisible(true);
         	  content3.setVisible(false);
-          }else if(b.getText().equals("ì¹´ì¹´ì˜¤ê³„ì • ì°¾ê¸°")) {
+          }else if(b.getText().equals("Ä«Ä«¿À°èÁ¤ Ã£±â")) {
         	  //complete, no more code need
         	  content.setVisible(false);
         	  content2.setVisible(false);
         	  content3.setVisible(true);
-          }else if(b.getText().equals("ê³„ì • ìƒì„±í•˜ê¸°")) {
+          }else if(b.getText().equals("°èÁ¤ »ı¼ºÇÏ±â")) {
         	  if(signupIdText.getText().equals("") || signupPwText.getText().equals("") || nicknameText.getText().equals("")
         			  || nameText.getText().equals("") || emailText.getText().equals("") || birthText.getText().equals("")
         			  || sayingText.getText().equals("")) {//if not null is null,,,
@@ -223,10 +243,10 @@ public class LabelDemo extends JFrame{
 					if(!o.check_id(s)) {
 						  JOptionPane.showMessageDialog(null, "ID \'"+signupIdText.getText()+"\' is already used");
 					 }else {
-						  //ê³„ì • ì¶”ê°€
+						  //°èÁ¤ Ãß°¡
 						  o.sign_up(signupIdText.getText(), signupIdText.getText(),nicknameText.getText(),nameText.getText(),emailText.getText(),
 								  birthText.getText(),sayingText.getText(),phoneText.getText(),urlText.getText());
-						  JOptionPane.showMessageDialog(null, "íšŒì›ê°€ì… ì„±ê³µ");
+						  JOptionPane.showMessageDialog(null, "È¸¿ø°¡ÀÔ ¼º°ø");
 						  content.setVisible(true);
 						  content2.setVisible(false);
 						  content3.setVisible(false);
@@ -239,12 +259,12 @@ public class LabelDemo extends JFrame{
 					e1.printStackTrace();
 				}
         	  }
-          }else if(b.getText().equals("ë¡œê·¸ì¸ í™”ë©´ìœ¼ë¡œ ëŒì•„ê°€ê¸°")) {
+          }else if(b.getText().equals("·Î±×ÀÎ È­¸éÀ¸·Î µ¹¾Æ°¡±â")) {
         	  //complete, no more code need
         	  content.setVisible(true);
         	  content2.setVisible(false);
         	  content3.setVisible(false);
-          }else if(b.getText().equals("ID ì°¾ê¸°")) {
+          }else if(b.getText().equals("ID Ã£±â")) {
         	  //jdbc if there are equal name,email find ID ,then give ID
         	  content.setVisible(true);
         	  content2.setVisible(false);
@@ -252,5 +272,9 @@ public class LabelDemo extends JFrame{
           }
        }
     }
-
+   
+   public static void main (String [] args) {
+		LabelDemo w = new LabelDemo();
+		w.setVisible (true);
+	}
 }
