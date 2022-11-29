@@ -386,36 +386,40 @@ class MyFrame extends JFrame{
 			                  //별명
 			                  JLabel nickname = new JLabel(inform[0]); //<----------------------- DB : 로그인 한 사람의 별명
 			                  nickname.setBounds(70,27,100,10);
-			                  nickname.setFont(new Font("맑은 고딕", Font.BOLD , 10));
+			                  nickname.setFont(new Font(null, Font.BOLD , 10));
 			                  profile.add(nickname);
 			                  //오늘의 한마디
 			                  JLabel message = new JLabel(inform[1]); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
 			                  message.setBounds(70,45,180,10);
-			                  message.setFont(new Font("맑은 고딕", Font.PLAIN , 10));
+			                  message.setFont(new Font(null, Font.PLAIN , 10));
 			                  profile.add(message);
 			                  //온오프라인 상태
-			                  DrawPanel d = new DrawPanel();
-			                  d.setBounds(270, 35, 10, 10);
-			                  profile.add(d);
+			                  
+			                  
+			                  //DrawPanel d = new DrawPanel();
+			                  JButton ac_plus = new JButton("plus");
+			                  ac_plus.setFont(new Font(null, Font.PLAIN , 10));
+			                  ac_plus.addActionListener(b_plus);
+			                  ac_plus.setBounds(220, 25, 70, 30);
+			                  profile.add(ac_plus);
 			         
 			         scrollSearchPanel.add(profile);
 			         Pnum++;
 			      }
 			   }
 			   txtFieldSearch.setText("");
-		      //스크롤 pane은 스크롤바가 포함된 object를 생성하는 부분이다. 그럼 이 부분에서 scrollSearchPanel패널을 스크롤바가 존재하는 object에 삽입해
-		      //스크롤 효과를 추가
+		      
 	           
 		   }
 	   }
    }
+   Buttonplus b_plus = new Buttonplus(); 
    class Buttonplus implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//모든 댓글들은 포스트잇 이미지를 바탕으로 만들어진 버튼이다. 따라서 버튼을 눌렀을 때 child_comment를 확인할 수 있는 창을 띄운다.
-			//JButton b = (JButton)e.getSource();
 			JButton b = (JButton)e.getSource();
-			/*/*asdfasdfasdfsadfasdfsdfsdaasfd*/
+			String s=b.getText();
+			
 	}
 }
    
