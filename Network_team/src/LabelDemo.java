@@ -23,8 +23,8 @@ public class LabelDemo extends JFrame{
    ButtonListener bl = new ButtonListener();
    Container contentPane;
    JPanel content,content2,content3;
-   public LabelDemo (/*Operator _o*/) {
-      /*o=_o;*/
+   public LabelDemo (Operator _o) {
+      o=_o;
       setTitle ("Kakaotalk");
       setSize (WIDTH, HEIGHT);
       setLocationRelativeTo(null);   //실행했을 때 frame창 화면을 컴퓨터 가운데에 배치 : 참고 <https://kkh0977.tistory.com/595>
@@ -273,8 +273,4 @@ public class LabelDemo extends JFrame{
        }
     }
    
-   public static void main (String [] args) {
-		LabelDemo w = new LabelDemo();
-		w.setVisible (true);
-	}
 }
