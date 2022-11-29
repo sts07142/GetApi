@@ -1,9 +1,11 @@
+drop database net;
 create database IF NOT exists net;
 use net;
 create table USER(
     user_id varchar(20) not null,
     password varchar(20) not null,
-    name varchar(10) not null,
+    name varchar(20) not null,
+    nick_name varchar(20) not null,
     email varchar(20) not null,
     birth date not null,
     phone_number varchar(20),
