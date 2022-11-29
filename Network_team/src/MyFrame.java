@@ -409,6 +409,15 @@ class MyFrame extends JFrame{
 		   }
 	   }
    }
+   class Buttonplus implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//모든 댓글들은 포스트잇 이미지를 바탕으로 만들어진 버튼이다. 따라서 버튼을 눌렀을 때 child_comment를 확인할 수 있는 창을 띄운다.
+			//JButton b = (JButton)e.getSource();
+			JButton b = (JButton)e.getSource();
+			/*/*asdfasdfasdfsadfasdfsdfsdaasfd*/
+	}
+}
    
    class ButtonListener implements ActionListener{
       @Override
