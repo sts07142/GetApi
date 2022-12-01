@@ -96,7 +96,20 @@ public class Server {
 						String url=in.nextLine();
 						db.signUP(id, pass ,name, nick, birth, email, saying, phone, url);
 						
+					}else if(request.equals("follow")) {
+						String id=in.nextLine();
+						String other=in.nextLine();
+						String a =db.plus_f(id, other);
+						out.println(a);
+					}else if(request.equals("find_id")) {
+						String name=in.nextLine();
+						String email=in.nextLine();
+						String a =db.find_id(name, email);
+						out.println(a);
 					}
+					
+					
+					
 					}catch(Exception e) {
 						//확인되지 않은 예외처리(???)
 						out.println("???");

@@ -1,7 +1,13 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.*;
+
+import org.json.simple.parser.ParseException;
+
+
 
 class MyFrame extends JFrame{
    public static final int WIDTH = 405;
@@ -10,8 +16,8 @@ class MyFrame extends JFrame{
    //친구, 채팅목록, 검색, 내정보수정
    JButton btnFriend, btnChat, btnSearch, btnUpdateMyData;
    JPanel pnlFriend, pnlChat, pnlSearch, pnlUpdateMyData;
-   
-   JLabel panelName;
+   ApiExplorer a=new ApiExplorer();
+   JLabel panelName, apiLabel[];
    private JScrollPane scrollFriend;
    ImageIcon icon1, icon2, icon3, icon4, friends, chat, search, setting;
    Image img1, img2, img3, img4, changeImg1, changeImg2, changeImg3, changeImg4;
@@ -21,10 +27,13 @@ class MyFrame extends JFrame{
    get_Button getB=new get_Button();
    Operator o=null;
    String user_id=new String();
-   
+   JPanel profile = new JPanel(null);
    JTextField txtFieldSearch;
    JPanel scrollSearchPanel;
-   MyFrame(Operator _o, String user_id) {
+   //for reloading user_information
+
+   
+   MyFrame(Operator _o, String user_id) throws IOException, ParseException {
 	   this.o=_o;
 	   this.user_id=user_id;
       setTitle ("Kakaotalk");
@@ -102,71 +111,12 @@ class MyFrame extends JFrame{
          btnUpdateMyData.addActionListener(bl);
       panel.add(left);
       
-      
-      //2) 중앙 panel - 친구list
-      int listCount = 0; //<---------------------------------DB에서 친구가 몇명인지 읽어온 후 넣음
       center = new JPanel(null);
       center.setBounds(80,0,325,460);
       center.setBackground (Color.white);
-         //2-1)친구 목록 화면 - scollPane 안에 넣을 panel
-         pnlFriend = new JPanel(null);
-         pnlFriend.setPreferredSize(new Dimension(313, 1000));
-         pnlFriend.setBackground(Color.black);
-            //title - 친구
-            JPanel titleProfile = new JPanel(null);
-            titleProfile.setBackground (Color.white);
-            JLabel title = new JLabel("친구");
-            title.setFont(new Font("맑은 고딕", Font.BOLD , 18));
-            title.setBounds(10,7,100,20);
-            titleProfile.add(title);
-            titleProfile.setBounds(0,0,295, 35);
-            pnlFriend.add(titleProfile);
+      //2) 중앙 panel - 친구list
             
-            //내 프로필
-            JPanel profile = new JPanel(null);
-            profile.setBackground (Color.white);
-            profile.setBounds(0,35,310, 80);
-            String inform1[]=null;
-            try {
-            	inform1=o.get_information(user_id);
-            } catch (Exception e1) {
-            	// TODO Auto-generated catch block
-            	e1.printStackTrace();
-            }
-                  //프로필사진
-                  ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
-                  Image img = icon.getImage();
-                  Image changeImg = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-                  ImageIcon changeIcon = new ImageIcon(changeImg);
-                  JLabel profileImg = new JLabel(changeIcon);
-                  profileImg.setBounds(10,15,50,50);
-                  profile.add(profileImg);
-                  //별명
-                  JLabel nickname = new JLabel(inform1[0]); //<----------------------- DB : 로그인 한 사람의 별명
-                  nickname.setBounds(70,27,100,10);
-                  nickname.setFont(new Font("맑은 고딕", Font.BOLD , 10));
-                  profile.add(nickname);
-                  //오늘의 한마디
-                  JLabel message = new JLabel(inform1[1]); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
-                  message.setBounds(70,45,180,10);
-                  message.setFont(new Font("맑은 고딕", Font.PLAIN , 10));
-                  profile.add(message);
-                  //온오프라인 상태
-                  DrawPanel d = new DrawPanel();
-                  d.setBounds(270, 35, 10, 10);
-                  profile.add(d);
-               pnlFriend.add(profile);
-               
-            //친구프로필 띄우기
-            JPanel profile1 = new JPanel();
-            profile1.setBackground (Color.pink);
-            profile1.setBounds(0,160, 310, 80);
-            pnlFriend.add(profile1);
-               
-         //스크롤바 포함시켜야 함
-         scrollFriend = new JScrollPane(pnlFriend, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-         scrollFriend.setBounds(0, 0, 313, 460);
-         center.add(scrollFriend);
+            profile_reset();
          
             //내 프로필 띄우기
             //JPanel profile = new JPanel();
@@ -321,7 +271,10 @@ class MyFrame extends JFrame{
       
       
       
-      //3) 아래 panel - 공공데이터 사용
+    //3) API panel
+      apiLabel=new JLabel[5];
+      for(int i=0; i<5; i++)
+         apiLabel[i]=new JLabel();
       bottom = new JPanel(null);
       bottom.setBounds(0,460,405,135);
       Color bottomColor = new Color(248,248,248);
@@ -329,99 +282,320 @@ class MyFrame extends JFrame{
       panel.add(bottom);
       
       
+      String[] readApi=a.getApi().split(",");
+      //readApi.length will be 16
+      //temperature
+      apiLabel[0].setText("Gachon Univ. "+readApi[7]+"℃");
+      //humidity
+      apiLabel[1].setText("Humidity "+readApi[3]+"%");
+      //wind speed
+      apiLabel[2].setText("Wind Speed "+readApi[15]+"m/s");
+      //rain type
+      apiLabel[3].setText(readApi[1]);
+      //rain drop
+      apiLabel[4].setText(readApi[5]);
+      
+      apiLabel[0].setBounds(0,0,200,40);
+      apiLabel[1].setBounds(0,40,200,40);
+      apiLabel[2].setBounds(200,40,200,40);
+      apiLabel[3].setBounds(0,80,400,40);
+      for(int i=0; i<4;i++)
+         bottom.add(apiLabel[i]);      
+      
+      int chk=1;
+      switch(readApi[0]) {
+      //NONE(0), RAIN(1), RAIN+SNOW(2), SNOW(3)
+      //RAIN DROP(5), RAIN/SNOW DROP(6), SNOW DROP(7)
+      case "0":
+         chk=0;
+          apiLabel[3].setText("NO RAIN/SNOW");
+          apiLabel[4].setText(readApi[5]+"mm");
+         break;
+      case "1":
+         apiLabel[3].setText("RAIN");
+          apiLabel[4].setText(readApi[5]+"mm");
+         break;
+      case "2":
+         apiLabel[3].setText("RAIN/SNOW");
+          apiLabel[4].setText(readApi[5]+"mm");
+         break;
+      case "3":
+         apiLabel[3].setText("SNOW");
+          apiLabel[4].setText(readApi[5]+"mm");
+         break;
+      case "5":
+         apiLabel[3].setText("RAIN DROP");
+          apiLabel[4].setText(readApi[5]+"mm");
+         break;
+      case "6":
+         apiLabel[3].setText("RAIN/SNOW DROP");
+          apiLabel[4].setText(readApi[5]+"mm");
+         break;
+      case "7":
+         apiLabel[3].setText("SNOW DROP");
+          apiLabel[4].setText(readApi[5]+"mm");
+         break;     
+      }
+      
+      
       
       contentPane.add(panel, BorderLayout.CENTER);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
    }
-   class get_Button implements ActionListener{
-	   public void actionPerformed (ActionEvent e) {
-		   JButton b = (JButton)e.getSource();
-		   if(b.getText().equals("검색")) {
-			   String s=txtFieldSearch.getText();
-			  
-			   if(s.equals("") || s.equals(null)) {
-				   
-			   }else {
-				   
-				   String[] sample=null;
-				   try {
-				   sample = o.find_friends(s, user_id);
-				   } catch (Exception e1) {
-				   // TODO Auto-generated catch block
-				   e1.printStackTrace();
-				   }
-				   
-				   scrollSearchPanel.updateUI();
-				   scrollSearchPanel.removeAll();
-				   scrollSearchPanel.revalidate();
-				   scrollSearchPanel.repaint();
-				   //scrollSearchPanel=new JPanel(null);
-				   
-				   scrollSearchPanel.setPreferredSize(new Dimension(313, 1000)); 
-				   scrollSearchPanel.setBackground(Color.black);
-			      int Psize=Integer.parseInt(sample[0]);
-			      int Pnum=1;
-			      
-			      while(Psize>Pnum) {
-			    	  
-			    	  JPanel profile = new JPanel(null);
-			            profile.setBackground (Color.white);
-			            profile.setBounds(0,(Pnum-1)*80,310,80);
-			            String inform[]=null;
-			            try {
-			            	inform=o.get_information(sample[Pnum]);
-			            } catch (Exception e1) {
-			            	// TODO Auto-generated catch block
-			            	e1.printStackTrace();
-			            }
-			                  //프로필사진
-			                  ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
-			                  Image img = icon.getImage();
-			                  Image changeImg = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-			                  ImageIcon changeIcon = new ImageIcon(changeImg);
-			                  JLabel profileImg = new JLabel(changeIcon);
-			                  profileImg.setBounds(10,15,50,50);
-			                  profile.add(profileImg);
-			                  //별명
-			                  JLabel nickname = new JLabel(inform[0]); //<----------------------- DB : 로그인 한 사람의 별명
-			                  nickname.setBounds(70,27,100,10);
-			                  nickname.setFont(new Font(null, Font.BOLD , 10));
-			                  profile.add(nickname);
-			                  //오늘의 한마디
-			                  JLabel message = new JLabel(inform[1]); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
-			                  message.setBounds(70,45,180,10);
-			                  message.setFont(new Font(null, Font.PLAIN , 10));
-			                  profile.add(message);
-			                  //온오프라인 상태
-			                  
-			                  
-			                  //DrawPanel d = new DrawPanel();
-			                  JButton ac_plus = new JButton("plus");
-			                  ac_plus.setFont(new Font(null, Font.PLAIN , 10));
-			                  ac_plus.addActionListener(b_plus);
-			                  ac_plus.setBounds(220, 25, 70, 30);
-			                  profile.add(ac_plus);
-			         
-			         scrollSearchPanel.add(profile);
-			         Pnum++;
-			      }
-			   }
-			   txtFieldSearch.setText("");
-		      
-	           
-		   }
-	   }
+   
+   void profile_reset() {
+       pnlFriend.updateUI();
+       pnlFriend.removeAll();
+	   int listCount = 0; //<---------------------------------DB에서 친구가 몇명인지 읽어온 후 넣음
+	      
+	         //2-1)친구 목록 화면 - scollPane 안에 넣을 panel
+	         pnlFriend = new JPanel(null);
+	         pnlFriend.setPreferredSize(new Dimension(313, 1000));
+	         pnlFriend.setBackground(Color.black);
+	            //title - 친구
+	            JPanel titleProfile = new JPanel(null);
+	            titleProfile.setBackground (Color.white);
+	            JLabel title = new JLabel("친구");
+	            title.setFont(new Font("맑은 고딕", Font.BOLD , 18));
+	            title.setBounds(10,7,100,20);
+	            titleProfile.add(title);
+	            titleProfile.setBounds(0,0,295, 35);
+	            pnlFriend.add(titleProfile);
+	            
+	            //내 프로필
+	            pnlFriend=new JPanel(null);
+	            profile.setBackground (Color.white);
+	            profile.setBounds(0,35,310, 80);
+	            
+	         
+	   
+	   
+	   String inform1[]=null;
+       try {
+       	inform1=o.get_information(user_id);
+       } catch (Exception e1) {
+       	// TODO Auto-generated catch block
+       	e1.printStackTrace();
+       }
+       
+             //프로필사진
+             ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
+             Image img = icon.getImage();
+             Image changeImg = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+             ImageIcon changeIcon = new ImageIcon(changeImg);
+             JLabel profileImg = new JLabel(changeIcon);
+             profileImg.setBounds(10,15,50,50);
+             profile.add(profileImg);
+             //별명
+             JLabel nickname = new JLabel(inform1[0]); //<----------------------- DB : 로그인 한 사람의 별명
+             nickname.setBounds(70,27,100,10);
+             nickname.setFont(new Font("맑은 고딕", Font.BOLD , 10));
+             profile.add(nickname);
+             //오늘의 한마디
+             JLabel message = new JLabel(inform1[1]); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
+             message.setBounds(70,45,180,10);
+             message.setFont(new Font("맑은 고딕", Font.PLAIN , 10));
+             profile.add(message);
+             //온오프라인 상태
+             DrawPanel d = new DrawPanel();
+             d.setBounds(270, 35, 10, 10);
+             profile.add(d);
+          pnlFriend.add(profile);
+       
+          
+       //친구프로필 띄우기
+       JPanel profile1 = new JPanel();
+       profile1.setBackground (Color.pink);
+       profile1.setBounds(0,110, 310, 80);
+       pnlFriend.add(profile1);
+       //add friends
+       
+    //스크롤바 포함시켜야 함
+    scrollFriend = new JScrollPane(pnlFriend, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    scrollFriend.setBounds(0, 0, 313, 460);
+    center.add(scrollFriend);
+    
+    
    }
+   
+   
+   
+   ImageIcon icon=new ImageIcon("src/image/plus.png");
+   Image img=icon.getImage();
+   Image changeImg=img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
+   ImageIcon plusIcon=new ImageIcon(changeImg);
+   
    Buttonplus b_plus = new Buttonplus(); 
    class Buttonplus implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton b = (JButton)e.getSource();
-			String s=b.getText();
-			
+			String id=b.getText();
+			String temp = null;
+			try {
+				temp = o.follow(user_id, id);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			if(temp.equals("true")) {
+				JOptionPane.showMessageDialog(null, "success plus");
+			}else {
+				JOptionPane.showMessageDialog(null, "fail plus");
+			}
+			scrollSearchPanel.updateUI();
+			scrollSearchPanel.removeAll();
+			scrollSearchPanel.revalidate();
+			scrollSearchPanel.repaint();
 	}
 }
+   
+   
+   class get_Button implements ActionListener{
+	   public void actionPerformed (ActionEvent e) {
+		   String[] readApi=a.getApi().split(",");
+		      //readApi.length will be 16
+		      //temperature
+		      apiLabel[0].setText("Gachon Univ. "+readApi[7]+"℃");
+		      //humidity
+		      apiLabel[1].setText("Humidity "+readApi[3]+"%");
+		      //wind speed
+		      apiLabel[2].setText("Wind Speed "+readApi[15]+"m/s");
+		      //rain type
+		      apiLabel[3].setText(readApi[1]);
+		      //rain drop
+		      apiLabel[4].setText(readApi[5]);
+		      
+		      apiLabel[0].setBounds(0,0,200,40);
+		      apiLabel[1].setBounds(0,40,200,40);
+		      apiLabel[2].setBounds(200,40,200,40);
+		      apiLabel[3].setBounds(0,80,400,40);
+		      for(int i=0; i<4;i++)
+		         bottom.add(apiLabel[i]);      
+		      
+		      int chk=1;
+		      switch(readApi[0]) {
+		      //NONE(0), RAIN(1), RAIN+SNOW(2), SNOW(3)
+		      //RAIN DROP(5), RAIN/SNOW DROP(6), SNOW DROP(7)
+		      case "0":
+		         chk=0;
+		          apiLabel[3].setText("NO RAIN/SNOW");
+		          apiLabel[4].setText(readApi[5]+"mm");
+		         break;
+		      case "1":
+		         apiLabel[3].setText("RAIN");
+		          apiLabel[4].setText(readApi[5]+"mm");
+		         break;
+		      case "2":
+		         apiLabel[3].setText("RAIN/SNOW");
+		          apiLabel[4].setText(readApi[5]+"mm");
+		         break;
+		      case "3":
+		         apiLabel[3].setText("SNOW");
+		          apiLabel[4].setText(readApi[5]+"mm");
+		         break;
+		      case "5":
+		         apiLabel[3].setText("RAIN DROP");
+		          apiLabel[4].setText(readApi[5]+"mm");
+		         break;
+		      case "6":
+		         apiLabel[3].setText("RAIN/SNOW DROP");
+		          apiLabel[4].setText(readApi[5]+"mm");
+		         break;
+		      case "7":
+		         apiLabel[3].setText("SNOW DROP");
+		          apiLabel[4].setText(readApi[5]+"mm");
+		         break;     
+		      }
+		      System.out.println("api reload");
+		   JButton b = (JButton)e.getSource();
+		   if(b.getText().equals("검색")) {
+			   String samll_id=txtFieldSearch.getText();
+			  samll_id=samll_id.trim();
+			   if(samll_id.equals("") || samll_id.equals(null)) {
+			
+				   samll_id="abcdefghlasjdkflklsdjfljsakldfjklsadf";
+			   }else {
+				   
+				 
+			      }
+			   String[] sample=null;
+			   try {
+			   sample = o.find_friends(samll_id, user_id);
+			   } catch (Exception e1) {
+			   // TODO Auto-generated catch block
+			   e1.printStackTrace();
+			   }
+			   
+			   scrollSearchPanel.updateUI();
+			   scrollSearchPanel.removeAll();
+			   scrollSearchPanel.revalidate();
+			   scrollSearchPanel.repaint();
+			   //scrollSearchPanel=new JPanel(null);
+			   
+			   scrollSearchPanel.setPreferredSize(new Dimension(313, 1000)); 
+			   scrollSearchPanel.setBackground(Color.black);
+		      int Psize=Integer.parseInt(sample[0]);
+		      int Pnum=1;
+		      
+		      while(Psize>Pnum) {
+		    	  
+		    	  JPanel profile = new JPanel(null);
+		            profile.setBackground (Color.white);
+		            profile.setBounds(0,(Pnum-1)*80,310,80);
+		            String inform[]=null;
+		            try {
+		            	inform=o.get_information(sample[Pnum]);
+		            } catch (Exception e1) {
+		            	// TODO Auto-generated catch block
+		            	e1.printStackTrace();
+		            }
+		                  //프로필사진
+		                  ImageIcon icon = new ImageIcon("src/image/profile.png"); //<----------------------- DB : 로그인 한 사람의 프로필사진
+		                  Image img = icon.getImage();
+		                  Image changeImg = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		                  ImageIcon changeIcon = new ImageIcon(changeImg);
+		                  JLabel profileImg = new JLabel(changeIcon);
+		                  profileImg.setBounds(10,15,50,50);
+		                  profile.add(profileImg);
+		                  //별명
+		                  JLabel nickname = new JLabel(inform[0]); //<----------------------- DB : 로그인 한 사람의 별명
+		                  nickname.setBounds(70,27,100,10);
+		                  nickname.setFont(new Font("맑은 고딕", Font.BOLD , 10));
+		                  profile.add(nickname);
+		                  //오늘의 한마디
+		                  JLabel message = new JLabel(inform[1]); //<----------------------- DB : 로그인 한 사람의 "오늘의 한마디"
+		                  message.setBounds(70,45,180,10);
+		                  message.setFont(new Font("맑은 고딕", Font.PLAIN , 10));
+		                  profile.add(message);
+		                  
+		                  
+		                  
+		                  JButton ac_plus = new JButton(sample[Pnum],plusIcon);
+		                  
+		                  //ac_plus.setFont(new Font(null, Font.PLAIN , 10));
+		                 //ac_plus.setHorizontalTextPosition(JButton.CENTER);
+		                  ac_plus.setBorderPainted(false);
+		                  ac_plus.setBackground(Color.white);
+		      	       
+		                  ac_plus.addActionListener(b_plus);
+		                  ac_plus.setBounds(235, 20, 40, 40);
+		                  profile.add(ac_plus);
+		         
+		         scrollSearchPanel.add(profile);
+		         Pnum++;
+			   }
+			   txtFieldSearch.setText("");
+		      //스크롤 pane은 스크롤바가 포함된 object를 생성하는 부분이다. 그럼 이 부분에서 scrollSearchPanel패널을 스크롤바가 존재하는 object에 삽입해
+		      //스크롤 효과를 추가
+	           
+		   }
+	   }
+   }
+  	
+
+   
    
    class ButtonListener implements ActionListener{
       @Override
@@ -437,6 +611,7 @@ class MyFrame extends JFrame{
              icon2 = new ImageIcon("src/image/not_chat.png");
              icon3 = new ImageIcon("src/image/not_search.png");
              icon4 = new ImageIcon("src/image/not_setting.png");
+             profile_reset();
              pnlFriend.setVisible(true);
              pnlChat.setVisible(false);
              pnlSearch.setVisible(false);

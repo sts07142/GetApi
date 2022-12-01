@@ -19,6 +19,7 @@ public class Operator{
 	Operator() throws UnknownHostException, IOException{
 		int port_num=7777;
 		String host="localhost";
+		/*
 		try {
 			
 			FileInputStream fis=new FileInputStream("server_info.dat");
@@ -33,7 +34,7 @@ public class Operator{
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
-
+	*/
 		socket=new Socket(host,port_num);
 		in=new Scanner(socket.getInputStream());
 		out=new PrintWriter(socket.getOutputStream(), true);
@@ -68,11 +69,18 @@ public class Operator{
 		String[] s1=temp1.split("/");
 		return s1;
 	}
-	boolean follow(String user_id, String other_id) throws Exception {
+	String follow(String user_id, String other_id) throws Exception {
 		out.println("follow");
 		out.println(user_id);
 		out.println(other_id);
-		boolean num=in.nextBoolean();
+		String num=in.nextLine();
+		return num;
+	}
+	String find_ID(String name, String email) throws Exception {
+		out.println("find_id");
+		out.println(name);
+		out.println(email);
+		String num=in.nextLine();
 		return num;
 	}
 	boolean check_id(String user_id) throws Exception {
@@ -94,7 +102,7 @@ public class Operator{
 			temp1=in.nextLine();
 			find_count++;
 		}
-		
+
 		System.out.println(temp1);
 		String[] s1=temp1.split("/");
 		for(int i=0; i<2; i++) {

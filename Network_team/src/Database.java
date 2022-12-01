@@ -31,7 +31,26 @@ public class Database {
 			System.out.println("MySQL fail > " + e.toString());
 		}
 	}
-	
+	String plus_f(String user, String other) {
+		boolean flag = true;
+		
+		String sql = "insert into FOLLOW values (?,?)";
+		try {
+			
+
+			PreparedStatement pstmt = con.prepareStatement(sql);
+
+			pstmt.setString(1, other);
+			pstmt.setString(2, user);
+
+
+			int r = pstmt.executeUpdate();
+		} catch (SQLException e1) {
+			System.out.println("SQL error" + e1.getMessage());
+			return "false";
+		}
+		return "true";
+	}
 	
 	
 	boolean logincheck(String _i, String _p) {
@@ -171,7 +190,8 @@ public class Database {
 		String[] p=new String[30]; 
 		int count = 1;
 		try {
-			String checkingStr = "SELECT user_id FROM USER where user_id LIKE \'%"+other+"%\' and user_id !=\'"+user_id+"\'";
+			String checkingStr = "SELECT A.user_id FROM USER as A where A.user_id LIKE \'%"+other+"%\' and A.user_id !=\'"
+					+user_id+"\' and A.user_id not in(select f_id from FOLLOW WHERE user_id=\'"+user_id+"\')";
 			ResultSet result = stmt.executeQuery(checkingStr);
 			//게시물은 여러개이다 보니 while문을 통해 게시물의 정보를 계속해서 읽어나간다.
 			while(result.next()) {
@@ -206,6 +226,21 @@ public class Database {
 		}
 		//게시물의 개수를 배열의 0번째에 대입한다.
 		return p;
+	}
+	String find_id(String name, String email) {
+		String s=new String();
+		try {
+			String checkingStr = "select user_id from USER where name = \'" + name + "\' and email=\'"+email+"\'";
+			ResultSet result = stmt.executeQuery(checkingStr);
+			while(result.next()) {
+				s= result.getString(1);
+				if (result.wasNull()) s = "1";
+			}
+		} catch(Exception e) {
+		}
+		System.out.println("name"+name+email);
+		System.out.println("database"+s);
+		return s;
 	}
 }
 
