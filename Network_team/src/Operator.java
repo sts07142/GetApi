@@ -10,8 +10,6 @@ import java.util.Scanner;
 public class Operator{
 	LabelDemo LD=null;
 	MyFrame mainFrame=null;
-	//main구문에서 각 클래스에 대한 생성자를 null로 초기화하고 이를 매개변수로 사용한다.
-	//
 	Socket socket=null;
 	Scanner in;
 	PrintWriter out;

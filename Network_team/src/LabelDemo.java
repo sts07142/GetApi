@@ -523,6 +523,7 @@ public class LabelDemo extends JFrame{
           }
        }
     }
+<<<<<<< HEAD
    /*
    public static void main (String [] args) {
       LabelDemo w = new LabelDemo();
@@ -602,5 +603,7 @@ public class LabelDemo extends JFrame{
 
    }
    
+=======
+>>>>>>> 2f46633de42055e9c3f85afd461fa33beaca99ed
    
 }
