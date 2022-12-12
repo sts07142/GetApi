@@ -7,7 +7,7 @@ import java.awt.event.*;
 import java.net.*;
 import java.io.*;
 
-public class LabelDemo extends JFrame{
+public class LabelDemo extends JFrame{ //login/signup frame
    public static final int WIDTH = 385;
    public static final int HEIGHT = 595;
    private JButton loginBtn, signupBtn, findIdBtn,doSignupBtn,backtoLoginBtn[],doFindIdBtn;
@@ -30,6 +30,8 @@ public class LabelDemo extends JFrame{
       setSize (WIDTH, HEIGHT);
       setLocationRelativeTo(null);   //frame screen in center of computer
       setResizable(false);  //frameFix window size
+      ImageIcon frameIcon = new ImageIcon("src/image/LOGO.png");
+      setIconImage(frameIcon.getImage());
       Color backgroundColor = new Color(250, 225, 0);
       backtoLoginBtn=new JButton[2];
       backtoLoginBtn[0]=new JButton("Back to login Frame");
@@ -74,7 +76,7 @@ public class LabelDemo extends JFrame{
       content3.setBackground(backgroundColor);
       
       //login content
-      ImageIcon icon = new ImageIcon("C:\\Users\\82105\\Desktop\\LOGO-05.png");
+      ImageIcon icon = new ImageIcon("src/image/LOGO-05.png");
       Image img = icon.getImage();
       Image changeImg = img.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
       ImageIcon changeIcon = new ImageIcon(changeImg);
@@ -159,8 +161,6 @@ public class LabelDemo extends JFrame{
       findIdBtn.setBounds(60,480,250,33);
       content.add(findIdBtn);
       content.setVisible(true);
-      
-      
       
       //singup content2
      signupIdText=new JTextField("ID") {
@@ -307,7 +307,7 @@ public class LabelDemo extends JFrame{
       });
       urlText.setForeground(Color.lightGray);
 
-     ImageIcon icon1 = new ImageIcon("C:\\Users\\82105\\Desktop\\add.png");
+     ImageIcon icon1 = new ImageIcon("src/image/add.png");
      Image img1 = icon1.getImage();
      Image changeImg1 = img1.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
      createID = new ImageIcon(changeImg1);
@@ -315,8 +315,7 @@ public class LabelDemo extends JFrame{
      doSignupBtn.setBorderPainted(false); //button Border
      doSignupBtn.setContentAreaFilled(false); //button Background
      doSignupBtn.setFocusPainted(false); //Img border in button
-     
-     
+          
      //Add button functionality
      doSignupBtn.addActionListener(bl);
      nameText.setBounds(60,182,124,35);
@@ -350,8 +349,6 @@ public class LabelDemo extends JFrame{
           }
       });
       
-      
-     
       //find account content3
       findNameText=new JTextField("Enter your Name"){ //optional
          @Override
@@ -410,11 +407,10 @@ public class LabelDemo extends JFrame{
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    }
    
-   class ButtonListener implements ActionListener{
+   class ButtonListener implements ActionListener{//if button is clicked
        @Override
        public void actionPerformed(ActionEvent e) {
           JButton b = (JButton)e.getSource();
-          
           /* Initialize ID and password entered in TextField to variable */
           //PW decoding
           String uid = loginIdText.getText();
@@ -424,18 +420,18 @@ public class LabelDemo extends JFrame{
           }
           upass=encoding.encode(upass, upass.length());
           //press login Button
-          if(b.getText().equals("Login")) {
+          if(b.getText().equals("Login")) {//if login button is clicked
              content.setVisible(true);
              content2.setVisible(false);
              content3.setVisible(false);
              
-             if(uid.equals("") || upass.equals("")) {
+             if(uid.equals("") || upass.equals("")) {//check text is null
                 //login fail
                 JOptionPane.showMessageDialog(null, "Please enter both your ID and PW", "login fail", JOptionPane.ERROR_MESSAGE);
                 System.out.println("login fail > Login information not entered");
              }else if(uid != null && upass != null) {
                 try {
-                   if(o.request_login(uid, upass)) {   //이 부분이 데이터베이스에 접속해 로그인 정보를 확인하는 부분이다.
+                   if(o.request_login(uid, upass)) {   //check id,pw is valid in DB
                       //id & pw correct
                      System.out.println("login success");
                      JOptionPane.showMessageDialog(null, "login success");
@@ -452,97 +448,77 @@ public class LabelDemo extends JFrame{
                   e1.printStackTrace();
                }
              }
-          }else if(b.getText().equals("Sign Up")) {
-             //complete, no more code need
+          }else if(b.getText().equals("Sign Up")) { //move page to sign up
              content.setVisible(false);
              content2.setVisible(true);
              content3.setVisible(false);
-          }else if(b.getText().equals("Find Kakao Account")) {
-             //complete, no more code need
+          }else if(b.getText().equals("Find Kakao Account")) {// move page to find kakao account
              content.setVisible(false);
              content2.setVisible(false);
              content3.setVisible(true);
-             
-          }else if(b.getText().equals("Back to login Frame")) {
-             //complete, no more code need
+          }else if(b.getText().equals("Back to login Frame")) {//move page to login
              content.setVisible(true);
              content2.setVisible(false);
              content3.setVisible(false);
-             
-          }else if(b.getText().equals("Search ID")) {
+          }else if(b.getText().equals("Search ID")) {//if search id button clicked
              //jdbc if there are equal name,email find ID ,then give ID
              content.setVisible(true);
              content2.setVisible(false);
              content3.setVisible(false);
-           //jdbc if there are equal name,email find ID ,then give ID
-       	  String find_name=findNameText.getText();
-             String find_email=findEmailText.getText();
-             String ID=new String();
-       	  try {
-				ID=o.find_ID(find_name, find_email);
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-       	  if(ID.equals(null) || ID.equals("")) {
-       		  JOptionPane.showMessageDialog(null, "not find");
-       	  }else {
-       		  JOptionPane.showMessageDialog(null, "your ID id that : "+ID);
-       	  }
-             
+	           //jdbc if there are equal name,email find ID ,then give ID
+	       	  String find_name=findNameText.getText();
+	          String find_email=findEmailText.getText();
+	          String ID=new String();
+	       	  try {
+					ID=o.find_ID(find_name, find_email);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	       	  if(ID.equals(null) || ID.equals("")) {
+	       		  JOptionPane.showMessageDialog(null, "not find");
+	       	  }else {
+	       		  JOptionPane.showMessageDialog(null, "your ID id that : "+ID);
+	       	  }      
           }
-          else if(b.getIcon().equals(createID)) {
+          else if(b.getIcon().equals(createID)) {//create account
              if(signupIdText.getText().equals("") || signupPwText.getText().equals("") || nicknameText.getText().equals("")
                    || nameText.getText().equals("") || emailText.getText().equals("") || birthText.getText().equals("")
-                   || sayingText.getText().equals("")) {//if not null is null,,,
+                   || sayingText.getText().equals("")) {//check something is null
                 JOptionPane.showMessageDialog(null, "Fill essential informations");
              }else {
-                 //jdbc if there isn't ID, then make account
                 System.out.println(1);
                 try {
                    String s=signupIdText.getText();
-               if(!o.check_id(s)) {
+                   if(!o.check_id(s)) {//if there is already used ID
                     JOptionPane.showMessageDialog(null, "ID \'"+signupIdText.getText()+"\' is already used");
-                }else {
-                    //add Account
-                    o.sign_up(signupIdText.getText(), signupIdText.getText(),nicknameText.getText(),nameText.getText(),emailText.getText(),
-                          birthText.getText(),sayingText.getText(),phoneText.getText(),urlText.getText());
-                    JOptionPane.showMessageDialog(null, "Success Sign Up");
-                    content.setVisible(true);
-                    content2.setVisible(false);
-                    content3.setVisible(false);
-                 }
-            } catch (HeadlessException e1) {
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-            } catch (Exception e1) {
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-            }
+                   }else {//create Account success
+	                    o.sign_up(signupIdText.getText(), signupIdText.getText(),nicknameText.getText(),nameText.getText(),emailText.getText(),
+	                          birthText.getText(),sayingText.getText(),phoneText.getText(),urlText.getText());
+	                    JOptionPane.showMessageDialog(null, "Success Sign Up");
+	                    content.setVisible(true);
+	                    content2.setVisible(false);
+	                    content3.setVisible(false);
+                   }
+	            } catch (HeadlessException e1) {
+	               e1.printStackTrace();
+	            } catch (Exception e1) {
+	               e1.printStackTrace();
+	            }
              }
           }
        }
     }
-<<<<<<< HEAD
-   /*
-   public static void main (String [] args) {
-      LabelDemo w = new LabelDemo();
-      w.setVisible (true);
-   }
-   */
-   public void ResetAllTextField() {
+   public void ResetAllTextField() {//reset textfields
       //content3
       if(signupIdText.getText().equals("")) {
          signupIdText.setText("ID");
          signupIdText.setForeground(Color.lightGray);
       }
-
-      
       if(signupPwText.getText().equals("")) {
          //signupPwText.setText("Passward");
          //signupPwText.setForeground(Color.lightGray);
       }
-     
       if(nicknameText.getText().equals("")) {
          nicknameText.setText("Nickname");
          nicknameText.setForeground(Color.lightGray);
@@ -602,8 +578,5 @@ public class LabelDemo extends JFrame{
          
 
    }
-   
-=======
->>>>>>> 2f46633de42055e9c3f85afd461fa33beaca99ed
    
 }
