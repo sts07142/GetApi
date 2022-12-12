@@ -1,68 +1,112 @@
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-class Exam18_sub extends JFrame implements MouseListener {
-     private Container con;
-     private JLabel lb = new JLabel("메모를 하십시요 "); // 라벨 생성
-     private JTextArea ta = new JTextArea();  // 텍스트 아레아 생성
-     private JScrollPane jsp = new JScrollPane(ta); // 텍스트 아레아에 스크롤 팬 생성
-     private JPopupMenu jpm = new JPopupMenu(); // 팝업 메뉴 생성
-     private JMenuItem jmi = new JMenuItem("1"); // 팝업 아이템 생성
-     private JMenuItem jmi1 = new JMenuItem("2"); //팝업 아이템 생성
-     private JMenuItem jmi2 = new JMenuItem("3"); // 팝업 아이템 생성
- 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.filechooser.FileSystemView;
 
-public Exam18_sub(){
-      super("Exam18");
-      this.init();
-      this.start();
-      this.setSize(300,300);
-      this.setVisible(true);
- }
- public void init(){
-	 menuButton bl =new menuButton();
-	 jmi.addActionListener(bl);
-	 jmi1.addActionListener(bl);
-	 jmi2.addActionListener(bl);
-      jpm.add(jmi);
-      jpm.add(jmi1);
-      jpm.add(jmi2);
-  
-  con = this.getContentPane();
-  con.setLayout(new BorderLayout());
-  con.add("North",lb);
-  con.add("Center",jsp);
-  
- }
- public void start(){
-      this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      ta.addMouseListener(this);
- }
-String s;
-// 마우스 리스너 모두 재정의 해야 함
- public void mouseClicked(MouseEvent e){}
- public void mousePressed(MouseEvent e){}
- public void mouseReleased(MouseEvent e){
-  if(e.getSource() == ta && e.isPopupTrigger() == true){   //마우스 우측 버튼 여부 검사
-   //팝업
-   jpm.show(ta,e.getX(),e.getY());
-   s=ta.getText();
-  }
- }
- public void mouseEntered(MouseEvent e){}
- public void mouseExited(MouseEvent e){}
- public static void main(String[] args) {
-	 Exam18_sub temp=new Exam18_sub();
-}
- class menuButton implements ActionListener{
-     @Override
-     public void actionPerformed(ActionEvent e) {
-    	 JMenuItem b = (JMenuItem)e.getSource();
-    	 System.out.println(b.getText()+s);
-    	 
-        //위의 코드는 게시물을 올리는 부분이다. 그럼 새롭게 update한 게시물을 바로 화면에 나타나게 하기 위해 p_reset함수를 사용(위에서 설명) 
-     }
-  }
- 
+
+public class Exam18_sub {
+   private JPopupMenu jpm = new JPopupMenu(); //make popup menu when mouse right button clicked
+   //list of popup menu
+      private JMenuItem jmi = new JMenuItem("profile"); 
+      private JMenuItem jmi1 = new JMenuItem("chatting"); 
+      private JMenuItem jmi2 = new JMenuItem("delete"); 
+      private JMenuItem jmi3 = new JMenuItem("sending file");
+      private JMenuItem jmi4 = new JMenuItem("game"); 
+      
+      public JPanel temp;
+      String id;
+      Operator o;
+      String user_id;
+      public Exam18_sub(JPanel temp, String id, Operator _o, String user_id) {
+         this.id=id;
+         this.temp=temp;
+         this.user_id=user_id;
+         o=_o;
+         init();
+         start();
+   }
+      public void init(){//init buttons
+          menuButton bl =new menuButton();
+          jmi.addActionListener(bl);
+          jmi1.addActionListener(bl);
+          jmi2.addActionListener(bl);
+          jmi3.addActionListener(bl);
+          jmi4.addActionListener(bl);
+            jpm.add(jmi);
+            jpm.add(jmi1);
+            jpm.add(jmi2);
+            jpm.add(jmi3);
+            jpm.add(jmi4);
+       }
+       public void start(){
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            MyMouseListener listener = new MyMouseListener();
+            temp.addMouseListener(listener);
+       }
+       private void setDefaultCloseOperation(int exitOnClose) {}
+      class MyMouseListener implements MouseListener{
+         //use mouseListener
+          public void mouseClicked(MouseEvent e){}
+          public void mousePressed(MouseEvent e){}
+          public void mouseReleased(MouseEvent e){
+           if(e.getSource() == temp && e.isPopupTrigger() == true){   //if mouse right button clicked
+            //show popup menu
+            jpm.show(temp,e.getX(),e.getY());
+            
+           }
+          }
+          public void mouseEntered(MouseEvent e){}
+          public void mouseExited(MouseEvent e){}
+       }       
+       class menuButton implements ActionListener{
+           private static final char[] File = null;
+         @Override
+           public void actionPerformed(ActionEvent e) {//if popup menu is clicked
+              JMenuItem b = (JMenuItem)e.getSource();
+              String s=b.getText();
+              if(s.equals("profile")) {//profile button clicked
+            	  //show profile
+                 o.pF=new profileFrame(id, o);
+              }else if(s.equals("delete")) {//delete button clicked
+            	  //delete in friend list
+                 o.delete(user_id, id);
+                 o.mainFrame.profile_reset();
+                 o.mainFrame.pnlFriend.setVisible(true);
+                 o.mainFrame.profile_reset();
+              }else if(s.equals("sending file")) {//sending file button clicked
+            	  //send file
+                 JFileChooser jfc;
+                 jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+                 int returnValue = jfc.showOpenDialog(null);
+                   File route = jfc.getSelectedFile();
+                   try {
+                  o.sending_file(user_id, id, route);
+               } catch (IOException e1) {
+                  e1.printStackTrace();
+               }
+              }else if(s.equals("chatting")) {//chatting button clicked
+            	  //chatting
+                 try {
+                       o.cF=new chatFrame(user_id,id,o);
+                    } catch (Exception e1) {
+                       e1.printStackTrace();
+                    }
+              }else if(s.equals("game")) {//game button clicked
+                 //game
+              }
+           }
+
+        }
+
 }
