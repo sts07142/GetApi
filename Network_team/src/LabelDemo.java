@@ -30,6 +30,10 @@ public class LabelDemo extends JFrame{ //login/signup frame
       setSize (WIDTH, HEIGHT);
       setLocationRelativeTo(null);   //frame screen in center of computer
       setResizable(false);  //frameFix window size
+	   
+      ImageIcon frameIcon = new ImageIcon("src/image/LOGO.png");
+      setIconImage(frameIcon.getImage());
+	   
       ImageIcon frameIcon = new ImageIcon("src/image/LOGO.png");
       setIconImage(frameIcon.getImage());
       Color backgroundColor = new Color(250, 225, 0);
