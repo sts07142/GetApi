@@ -265,7 +265,7 @@ public class Server {
                          System.out.println("readchat");
                          String ans[]=(db.readChat(id1, id2));
                          System.out.println("readchat");
-                         for(int i=0; i<=ans.length; i++) {
+                         for(int i=0; i<ans.length; i++) {
                             out.println(ans[i]);
                             System.out.println(i+" "+ans[i]);
                          }
