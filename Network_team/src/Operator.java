@@ -87,6 +87,7 @@ public class Operator{
          out.println(user_id);
          String temp1=new String();
          temp1=in.nextLine();
+         System.out.println(temp1);
          String[] s1=temp1.split("/");
          return s1;
       }
@@ -268,7 +269,7 @@ public class Operator{
 	      }
 	   
 	      String[] ans=new String[numOfChat];
-	      for(int i=0; i<=numOfChat; i++)
+	      for(int i=0; i<numOfChat; i++)
 	         ans[i]=in.nextLine();
 	         
 	      return ans;
