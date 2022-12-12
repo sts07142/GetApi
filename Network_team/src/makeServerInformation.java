@@ -9,10 +9,9 @@ import java.io.IOException;
 public class makeServerInformation {
 	public static void main(String[] args) {
 		int port_num=7777;
-		try {
-			//서버의 ip address와 port number에 대한 정보를 가진 파일을 만들기
-			
+		try {//make file to save server's ip address/port number
 			String message="127.0.0.1";
+			
 			FileOutputStream temp=new FileOutputStream("server_info.dat");
 			BufferedOutputStream temp1=new BufferedOutputStream(temp);
 			DataOutputStream temp2=new DataOutputStream(temp1);
