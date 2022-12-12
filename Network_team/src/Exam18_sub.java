@@ -83,7 +83,7 @@ public class Exam18_sub {
                  o.delete(user_id, id);
                  o.mainFrame.profile_reset();
                  o.mainFrame.pnlFriend.setVisible(true);
-                 o.mainFrame.profile_reset();
+                 o.mainFrame.scrollFriend.setViewportView(o.mainFrame.pnlFriend);
               }else if(s.equals("sending file")) {//sending file button clicked
             	  //send file
                  JFileChooser jfc;
@@ -110,3 +110,6 @@ public class Exam18_sub {
         }
 
 }
+
+
+
