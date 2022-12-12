@@ -652,43 +652,44 @@ public class Database {
 
       
    String[] readChat(String id1,String id2) throws SQLException {
-      
-     String checkingStr = "select A.chat_id from PARTICIPATE as A join PARTICIPATE as B where A.user_id=\'"+id1+"\' and B.user_id=\'"+id2+"\' and A.chat_id=B.chat_id";
-      ResultSet result = stmt.executeQuery(checkingStr);
-      String tableUId="";
-      while(result.next())
-         tableUId=result.getString(1);
-                 
-      System.out.println(tableUId);
-      
-       String sql2="select count(chat_id) from chat where chat_id=\'"+tableUId+"\' group by chat_id";
-       ResultSet rs2=stmt.executeQuery(sql2);
-       int numOfChat=0;
-       while(rs2.next())
-          numOfChat=(rs2.getInt(1));
-       
-       System.out.println(numOfChat);
-       
-       //whoisChat         getTxt         isFile         fName=getTxt
-       //chat_id user_id chatting file up_load
-        
-        
-       String[] ans=new String[numOfChat+1];
-       String sql3="select user_id, chatting, file from chat where chat_id=\'"+tableUId+"\' order by up_load asc";
-       ResultSet rs3=stmt.executeQuery(sql3);
-       
-       int cnt=1;
-       ans[0]=""+numOfChat;
-       
-       while(rs3.next()) {
-          ans[cnt]=rs3.getString(1)+","+rs3.getString(2)+","+rs3.getString(3);
-          System.out.println(ans[cnt]);
-          cnt++;
-       }
-       
-       
-       return ans;
-    }
+	      
+	     String checkingStr = "select A.chat_id from PARTICIPATE as A join PARTICIPATE as B where A.user_id=\'"+id1+"\' and B.user_id=\'"+id2+"\' and A.chat_id=B.chat_id";
+	      ResultSet result = stmt.executeQuery(checkingStr);
+	      String tableUId="";
+	      while(result.next())
+	         tableUId=result.getString(1);
+	                 
+	      System.out.println(tableUId);
+	      
+	       String sql2="select count(chat_id) from chat where chat_id=\'"+tableUId+"\' group by chat_id";
+	       ResultSet rs2=stmt.executeQuery(sql2);
+	       int numOfChat=0;
+	       while(rs2.next())
+	          numOfChat=(rs2.getInt(1));
+	       
+	       System.out.println(numOfChat);
+	       
+	       //whoisChat         getTxt         isFile         fName=getTxt
+	       //chat_id user_id chatting file up_load
+	        
+	        
+	       String[] ans=new String[numOfChat+1];
+	       String sql3="select user_id, chatting, file from chat where chat_id=\'"+tableUId+"\' order by up_load asc";
+	       ResultSet rs3=stmt.executeQuery(sql3);
+	       
+	       int cnt=1;
+	       ans[0]=""+numOfChat;
+	       
+	       while(rs3.next()) {
+	          ans[cnt]=rs3.getString(1)+","+rs3.getString(2)+","+rs3.getString(3);
+	          System.out.println(ans[cnt]);
+	          cnt++;
+	       }
+	       
+	       
+	       return ans;
+	    }
+
 }
 
 
