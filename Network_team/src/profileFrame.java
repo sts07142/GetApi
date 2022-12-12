@@ -21,7 +21,8 @@ class profileFrame extends JFrame {
       setResizable(false);
       
       Container contentPane = getContentPane();
-      
+      ImageIcon frameIcon = new ImageIcon("src/image/LOGO.png");
+      setIconImage(frameIcon.getImage());
          //0) the entire panel
          JPanel panelAll = new JPanel(null);
          panelAll.setLayout(null);
