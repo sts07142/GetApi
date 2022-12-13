@@ -98,7 +98,10 @@ public class Exam18_sub {
               }else if(s.equals("chatting")) {//chatting button clicked
             	  //chatting
                  try {
+                	o.make_chat(user_id, id);
                        o.cF=new chatFrame(user_id,id,o);
+                       
+                       o.thread_count=1;
                     } catch (Exception e1) {
                        e1.printStackTrace();
                     }
