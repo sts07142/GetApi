@@ -4,7 +4,9 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -22,7 +24,12 @@ public class Operator{
    OutputStream outFile;
    FileInputStream fin;
    DataOutputStream dout;
+   InputStream inFile = null;                       
+   DataInputStream din=null;
+   
+   
    chatFrame cF;
+   int thread_count=0;
    Operator() throws UnknownHostException, IOException{
       int port_num=7777;
       String host="localhost";
@@ -47,7 +54,18 @@ public class Operator{
       in=new Scanner(socket.getInputStream());
       out=new PrintWriter(socket.getOutputStream(), true);
       
-      outFile =socket.getOutputStream();                 //Opens a stream that sends data to the server in bytes.
+      outFile =socket.getOutputStream();    
+      inFile = socket.getInputStream(); 
+      outFile =socket.getOutputStream(); 
+      din = new DataInputStream(inFile);
+      in=new Scanner(socket.getInputStream());
+      out=new PrintWriter(socket.getOutputStream(), true);
+
+      //Opens a stream that sends data to the server in bytes.
+    dout = new DataOutputStream(outFile); 
+      
+      
+      //Opens a stream that sends data to the server in bytes.
     dout = new DataOutputStream(outFile); //Open streams sent in data units using OutputStream.
    }
   
@@ -213,6 +231,11 @@ public class Operator{
        out.println(chat_id);
        out.println(chatting);
    }
+   void make_chat(String user_id, String chat_id) {
+	      out.println("make_chat");
+	       out.println(user_id);
+	       out.println(chat_id);
+	   }
    void update_time(String user_id) {
       out.println("time");
        out.println(user_id);
@@ -274,7 +297,52 @@ public class Operator{
 	         
 	      return ans;
 	   }
-
+   void read_file(String id, String other, String path) throws IOException {
+	   out.println("read_file");
+	   out.println(id);
+	   out.println(other);
+	   out.println(path);
+	   System.out.println("asdfasdfasfdasdf");
+	   
+       int data = 0;
+	try {
+		data = din.readInt();
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}           //Receive Int-type data.
+        String filename = null;
+		try {
+			filename = din.readUTF();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+		System.out.println("filename "+filename);
+		
+        //filename=filename.replace("sending/", "");
+		filename="client/"+filename;
+		System.out.println("filename "+filename);
+        File file = new File(filename);             //Copy to the name of the file you entered and create it.
+        try {
+    outFile = new FileOutputStream(file);
+ } catch (Exception e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+ } 
+        System.out.println("asdfasdfasfdasdf");
+        int datas = data;                            //Variables that measure the number of transmissions, capacity.
+        byte[] buffer = new byte[1024];        //Creates a buffer that temporarily stores in bytes.
+        int len;
+        for(;data>0;data--){                   //The file is completed using FileOutputStream by receiving the number of transmitted data times.
+            len = inFile.read(buffer);
+            outFile.write(buffer,0,len);
+        }
+        outFile.flush();
+        outFile.close();
+        
+     
+   }
 
 
    
