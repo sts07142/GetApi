@@ -1,17 +1,13 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.time.LocalTime;
 
 import javax.swing.*;
-
+import java.awt.event.*;
 import org.json.simple.parser.ParseException;
 
-class MyFrame extends JFrame implements Runnable, ActionListener{//main frame after login success
+class MyFrame extends JFrame implements Runnable, ActionListener, WindowListener{//main frame after login success
    public static final int WIDTH = 405;
    public static final int HEIGHT = 595;
    JPanel panel, left, center, bottom;
@@ -423,11 +419,14 @@ class MyFrame extends JFrame implements Runnable, ActionListener{//main frame af
    public void run(){
       while(true) {
          
-         System.out.println(3000);
-         try {
          
-         chat_reset();
-         Thread.sleep(500);
+         try {
+         if(o.thread_count==0) {
+        	 System.out.println("myframe_reset");
+        	 chat_reset();
+             Thread.sleep(500);
+         }
+         
          //profile_reset();
          //Thread.sleep(2000);
       } catch (InterruptedException e) {
@@ -488,10 +487,20 @@ class MyFrame extends JFrame implements Runnable, ActionListener{//main frame af
              profile1.add(profileImg1);
              //nickname
              int temp=Integer.parseInt(inform11[0]);
-             String s=",";
-             for(int j=1; j<temp; j++) {
-                s=inform11[j]+s;
+             String s="";
+             if(temp==2) {
+            	 s=inform11[1];
+             }else {
+            	 for(int j=1; j<temp; j++) {
+            		 if(j==1) {
+            			 s=inform11[j];
+            		 }else {
+            			 s=s+", "+inform11[j];
+            		 }
+                     
+                  }
              }
+             
              
              JLabel nickname1 = new JLabel(s); 
              nickname1.setBounds(70,27,100,10);
@@ -506,7 +515,7 @@ class MyFrame extends JFrame implements Runnable, ActionListener{//main frame af
            
              int result = 0;
              if(inform[i+1].equals("0")) {
-                result = JOptionPane.showConfirmDialog(null, "chatting() allow?.");
+                result = JOptionPane.showConfirmDialog(null, "chatting("+s+") allow?.");
                 System.out.println("chat:"+result);
                 if(result==0) {
                    o.allow_chat(user_id, inform[i], "1");
@@ -515,7 +524,7 @@ class MyFrame extends JFrame implements Runnable, ActionListener{//main frame af
                 }
              }else if(inform[i+1].equals("-1")) {
                 o.allow_chat(user_id, inform[i], "-1");
-                JOptionPane.showMessageDialog(null, "chatting fail : ");
+                JOptionPane.showMessageDialog(null, "chatting fail : "+s);
              }
              pnlChat.add(profile1);
             i++;
@@ -965,5 +974,41 @@ void updateApi() throws IOException, ParseException {//function to update API in
          //API RELOAD*
 	}
    }
+@Override
+public void windowOpened(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void windowClosing(WindowEvent e) {
+	// TODO Auto-generated method stub
+	o.end_program(user_id);
+	o.mainFrame=null;
+}
+@Override
+public void windowClosed(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void windowIconified(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void windowDeiconified(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void windowActivated(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void windowDeactivated(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
    
 }
