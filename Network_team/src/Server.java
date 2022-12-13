@@ -7,8 +7,12 @@ import java.util.concurrent.*;
 import java.net.*;
 public class Server {
    static InputStream inFile = null;                       
-   static FileOutputStream outFile = null; 
+   static OutputStream outFile = null; 
    static DataInputStream din=null;
+   static FileInputStream fin;
+   static DataOutputStream dout;
+   static Scanner in;
+   static PrintWriter out;
    public static void main(String[] args)throws Exception {
 
       ServerSocket listenner=new ServerSocket(7777);
@@ -18,14 +22,20 @@ public class Server {
       
       while(true) {
          Socket sock=listenner.accept();
-          inFile = sock.getInputStream();  
+          inFile = sock.getInputStream(); 
+          outFile =sock.getOutputStream(); 
           din = new DataInputStream(inFile);
+          in=new Scanner(sock.getInputStream());
+          out=new PrintWriter(sock.getOutputStream(), true);
+ 
+          //Opens a stream that sends data to the server in bytes.
+        dout = new DataOutputStream(outFile); 
         //request client access, accept server
         //Associate one thread with the client
          pool.execute(new Capitalizer(sock));
       }
    }
-   static Database db = new Database();
+  
    private static class Capitalizer implements Runnable{
       
       private Socket socket;
@@ -34,6 +44,8 @@ public class Server {
       }
       @Override
       public void run() {
+    	  
+    	  Database db = new Database();
          System.out.println("Connected: "+socket);
          try {
             var in=new Scanner(socket.getInputStream());
@@ -193,7 +205,13 @@ public class Server {
                         String chatting=in.nextLine();
                         db.chat(id, chat_id, chatting);
                         
-                     }else if(request.equals("time")) {
+                     }else if(request.equals("make_chat")) {
+                    	 //update chatting message
+                         String id=in.nextLine();
+                         String chat_id=in.nextLine();
+                         db.make_chat(id, chat_id);
+                         
+                      }else if(request.equals("time")) {
                         String id=in.nextLine();
                         db.second_UPstate(id);
                      }else if(request.equals("end")) {
@@ -226,8 +244,9 @@ public class Server {
                         String other=in.nextLine();
                         
                         int data = din.readInt();           //Receive Int-type data.
-                         String filename = din.readUTF();            
-                         File file = new File(filename);             //Copy to the name of the file you entered and create it.
+                         String filename = din.readUTF(); 
+                         
+                         File file = new File("sending/"+filename);             //Copy to the name of the file you entered and create it.
                          try {
                      outFile = new FileOutputStream(file);
                   } catch (Exception e) {
@@ -242,17 +261,10 @@ public class Server {
                              len = inFile.read(buffer);
                              outFile.write(buffer,0,len);
                          }
+                         outFile.flush();
                          outFile.close();
-                         db.updateFile(id, other, filename);
-                         if( file.exists() ){
-                           if(file.delete()){
-                              System.out.println("파일삭제 성공");
-                           }else{
-                              System.out.println("파일삭제 실패");
-                           }
-                        }else{
-                           System.out.println("파일이 존재하지 않습니다.");
-                        }
+                         db.updateFile(id, other, "sending/"+filename);
+                         file.delete();
                       
                      }else if(request.equals("allow?")) {
                         String id=in.nextLine();
@@ -262,13 +274,52 @@ public class Server {
                      }else if(request.equals("readChat")) {
                          String id1=in.nextLine();
                          String id2=in.nextLine();
-                         System.out.println("readchat");
                          String ans[]=(db.readChat(id1, id2));
-                         System.out.println("readchat");
                          for(int i=0; i<ans.length; i++) {
                             out.println(ans[i]);
-                            System.out.println(i+" "+ans[i]);
                          }
+                      }else if(request.equals("read_file")) {
+                    	  String id1=in.nextLine();
+                          String id2=in.nextLine();
+                          
+                    	  String path=in.nextLine();
+                    	  System.out.println("123456789123456789");
+                    	  
+                    	  String file_path=db.read_file(id1, id2, "sending/"+path);
+                    	  System.out.println("123456789123456789");
+                    	               //Sends the name of the file to the server.
+                    	  System.out.println(file_path);
+                    	  
+                    	  File file=new File(file_path);
+                    	  try{
+                              fin = new FileInputStream(file); //FileInputStream
+                              
+                          byte[] buffer = new byte[1024];        //Creates a buffer that temporarily stores in bytes.
+                          int len;                               //Variable that measures the length of data to be transferred.
+                          int data=0;                            //Variables that measure the number of transmissions, capacity.
+                          System.out.println("123456789123456789");
+                          while((len = fin.read(buffer))>0){    
+                              data++;                        //Measures the amount of data.
+                          }
+                          
+                          int datas = data;                      //Because the data becomes zero through the for statement below, it is temporarily saved.
+                          System.out.println("123456789123456789");
+                          fin.close();
+                          fin = new FileInputStream(file);   //new FileInputStream
+                          dout.writeInt(data);                   //It sends the number of data transfers to the server
+                          dout.writeUTF(file.getName());               //Sends the name of the file to the server.
+                          System.out.println("123456789123456789");
+                           len = 0;
+                           System.out.println("operator start");
+                          for(;data>0;data--){             
+                              len = fin.read(buffer);        
+                              outFile.write(buffer,0,len);    
+                          }
+                          System.out.println("123456789123456789");
+                          }catch(Exception e){
+                        	  
+                          }
+                          
                       }
                
 
