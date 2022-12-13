@@ -34,8 +34,6 @@ public class LabelDemo extends JFrame{ //login/signup frame
       ImageIcon frameIcon = new ImageIcon("src/image/LOGO.png");
       setIconImage(frameIcon.getImage());
 	   
-      ImageIcon frameIcon = new ImageIcon("src/image/LOGO.png");
-      setIconImage(frameIcon.getImage());
       Color backgroundColor = new Color(250, 225, 0);
       backtoLoginBtn=new JButton[2];
       backtoLoginBtn[0]=new JButton("Back to login Frame");
