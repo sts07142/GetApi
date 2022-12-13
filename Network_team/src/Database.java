@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
+
+import com.mysql.cj.jdbc.Blob;
 
 
 public class Database {
@@ -506,7 +511,7 @@ public class Database {
       System.out.println(allow);
       
    }
-   void updateFile(String user_id, String other, String route) throws FileNotFoundException {
+   void updateFile(String user_id, String other, String route) throws IOException {
       String s=new String();
       //Uploading files to the Database
       try {
@@ -523,7 +528,7 @@ public class Database {
       if(s.equals(null) ||s.equals("")) {
          int chat_count=0;
          try {
-            String checkingStr = "select count(chat_id) from PARTICIPATE group by chat_id";
+            String checkingStr = "select max(chat_id) from PARTICIPATE group by chat_id";
             ResultSet result = stmt.executeQuery(checkingStr);
             while(result.next()) {
                chat_count= result.getInt(1);
@@ -569,6 +574,7 @@ public class Database {
          PreparedStatement pstmt = con.prepareStatement(sql);
          System.out.println(df.format(date));
          FileInputStream fis = new FileInputStream(route);
+         //File fis=new File(route);
          pstmt.setString(1, s);
          pstmt.setString(2, user_id);
          pstmt.setString(3, route);
@@ -576,7 +582,7 @@ public class Database {
          pstmt.setString(5, df.format(date));
          
          int r = pstmt.executeUpdate();
-         
+         fis.close();
       } catch (SQLException e1) {
          System.out.println("SQL error" + e1.getMessage());
       
@@ -584,7 +590,57 @@ public class Database {
       
 
    }
-   
+   void make_chat(String user_id,String chatid) throws SQLException{
+	   String s=new String();
+	      //Get the information in the chat
+	      try {
+	         String checkingStr = "select A.chat_id from PARTICIPATE as A join PARTICIPATE as B where A.user_id=\'"+user_id+"\' and B.user_id=\'"+chatid+"\' and A.chat_id=B.chat_id";
+	         ResultSet result = stmt.executeQuery(checkingStr);
+	         while(result.next()) {
+	            s= result.getString(1);
+	            if (result.wasNull()) s = null;
+	         }
+	      } catch(Exception e) {
+	      }
+	    //But if the chat room hasn't opened yet, it's a new one
+	      if(s.equals(null) ||s.equals("")) {
+	         int chat_count=0;
+	         try {
+	            String checkingStr = "select max(chat_id) from PARTICIPATE group by chat_id";
+	            ResultSet result = stmt.executeQuery(checkingStr);
+	            while(result.next()) {
+	               chat_count= result.getInt(1);
+	               if (result.wasNull()) chat_count = 0;
+	            }
+	         } catch(Exception e) {
+	         }
+	         
+	         
+	         String sql = "insert into PARTICIPATE values (?,?,?)";
+	         try {
+	            s=Integer.toString(chat_count+1);
+	            PreparedStatement pstmt = con.prepareStatement(sql);
+	            pstmt.setString(1, user_id);
+	            pstmt.setString(2, s);
+	            pstmt.setString(3, "1");
+	            int r = pstmt.executeUpdate();
+	            
+	            
+	         } catch (SQLException e1) {
+	            System.out.println("SQL error" + e1.getMessage());
+	         }
+	         try {
+	            s=Integer.toString(chat_count+1);
+	            PreparedStatement pstmt = con.prepareStatement(sql);
+	            pstmt.setString(1, chatid);
+	            pstmt.setString(2, s);
+	            pstmt.setString(3, "0");
+	            int r = pstmt.executeUpdate();
+	         } catch (SQLException e1) {
+	            System.out.println("SQL error" + e1.getMessage());
+	         }
+	      }
+   }
 
    void chat(String user_id,String chatid, String txt) throws SQLException {
       String s=new String();
@@ -602,7 +658,7 @@ public class Database {
       if(s.equals(null) ||s.equals("")) {
          int chat_count=0;
          try {
-            String checkingStr = "select count(chat_id) from PARTICIPATE group by chat_id";
+            String checkingStr = "select max(chat_id) from PARTICIPATE group by chat_id";
             ResultSet result = stmt.executeQuery(checkingStr);
             while(result.next()) {
                chat_count= result.getInt(1);
@@ -660,7 +716,7 @@ public class Database {
 	         tableUId=result.getString(1);
 	                 
 	      System.out.println(tableUId);
-	      
+	      	
 	       String sql2="select count(chat_id) from chat where chat_id=\'"+tableUId+"\' group by chat_id";
 	       ResultSet rs2=stmt.executeQuery(sql2);
 	       int numOfChat=0;
@@ -681,14 +737,76 @@ public class Database {
 	       ans[0]=""+numOfChat;
 	       
 	       while(rs3.next()) {
-	          ans[cnt]=rs3.getString(1)+","+rs3.getString(2)+","+rs3.getString(3);
+	    	   String fileName=rs3.getString(2);
+	    	   fileName=fileName.replace("sending/","");
+	    	   ans[cnt]=rs3.getString(1)+","+fileName+","+rs3.getBlob(3);
 	          System.out.println(ans[cnt]);
+	          
 	          cnt++;
 	       }
 	       
-	       
 	       return ans;
 	    }
+   		String read_file(String id1,String id2, String file_name)  throws SQLException, IOException {
+   			
+   			String checkingStr = "select A.chat_id from PARTICIPATE as A join PARTICIPATE as B where A.user_id=\'"+id1+"\' and B.user_id=\'"+id2+"\' and A.chat_id=B.chat_id";
+  	      ResultSet result = stmt.executeQuery(checkingStr);
+  	      String tableUId="";
+  	      while(result.next())
+  	         tableUId=result.getString(1);
+  	                 
+  	      System.out.println(tableUId);
+  	      	
+  	       String sql2="select count(chat_id) from chat where chat_id=\'"+tableUId+"\' group by chat_id";
+  	       ResultSet rs2=stmt.executeQuery(sql2);
+  	       int numOfChat=0;
+  	       while(rs2.next())
+  	          numOfChat=(rs2.getInt(1));
+  	       
+  	       System.out.println(numOfChat);
+  	       
+  	       //whoisChat         getTxt         isFile         fName=getTxt
+  	       //chat_id user_id chatting file up_load
+  	        
+  	        
+  	       String sql3="select user_id, chatting, file from chat where chat_id=\'"+tableUId+"\' and chatting =\'"+file_name+"\'order by up_load asc";
+  	       ResultSet rs3=stmt.executeQuery(sql3);
+  	       
+  	     String fileName=null;
+  	       while(rs3.next()) {
+  	    	   fileName=rs3.getString(2);
+  	    	   
+  	    	   System.out.println("database"+fileName);
+  	    	   
+  	    	   fileName=fileName.replace("sending/","receive/");
+  	    	 System.out.println("database"+fileName);
+  	    	 Blob blob = (Blob) rs3.getBlob(3);
+             InputStream inputStream = blob.getBinaryStream();
+             OutputStream outputStream = null;
+			try {
+				outputStream = new FileOutputStream(fileName);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+             int bytesRead = -1;
+             byte[] buffer = new byte[4096];
+             while ((bytesRead = inputStream.read(buffer)) != -1) {
+                 outputStream.write(buffer, 0, bytesRead);
+             }
+
+             inputStream.close();
+             outputStream.close();
+  	    	   
+  	    	   
+  	       }
+ 	       
+
+ 	       
+
+   			return fileName;
+   		}
 
 }
 
