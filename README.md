@@ -9,5 +9,7 @@
 
 # Team D
 유인재 https://github.com/sts07142
+
 우태경 https://github.com/wootaegyeoung
+
 황수빈 https://github.com/subin9227
